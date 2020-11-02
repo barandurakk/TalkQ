@@ -1,0 +1,45 @@
+.addFriend-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  margin: auto;
+  padding: 0px 50px 25px 50px;
+  left: 0;
+  right: 0;
+  width: 30%;
+  min-width: 500px;
+  height: 200px;
+  background-color: rgba(42, 47, 50);
+  box-shadow: -4px 4px 10px #000000;
+  border-radius: 15px;
+}
+
+.addFriend-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.addFriend-title {
+  width: 100%;
+  color: #ffffff;
+  text-align: center;
+}
+
+.addFriend-form-input {
+  padding: 10px 7px 10px 7px;
+  border-radius: 10px;
+}
+
+.addFriend-form-label {
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.addFriend-form-actions {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  justify-content: flex-end;
+}

@@ -1,0 +1,16 @@
+.main-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.left-container {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  min-width: 275px;
+  max-width: 400px;
+  background-color: #131c21;
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}

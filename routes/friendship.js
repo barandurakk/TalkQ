@@ -1,0 +1,162 @@
+const _ = require("lodash");
+const mongoose = require("mongoose");
+const requireLogin = require("../middlewares/requireLogin");
+const conversation = require("./conversation");
+const FriendRequest = mongoose.model("friendRequest");
+const User = mongoose.model("users")
+
+module.exports = (app) => {
+    
+    //send a friend request
+    app.post("/api/addFriend", requireLogin, async (req,res) => {
+        const recipientId = req.body.recipient;
+        const requesterId = req.user._id;
+        const requesterName = req.user.name;
+
+        //check if the recipient is you
+        if(recipientId == requesterId){
+            res.status(400).json({error: "You cannot send friend request to yourself!"})
+        }
+
+        //check is there a user by that id
+        try{
+            const recipient = await User.findOne({_id: recipientId});
+            if(!recipient){
+                return  res.status(404).json({error: "No user find by that Id"});
+            }
+        }catch(err){
+            if(err.kind === "ObjectId"){
+                return res.status(400).json({error: "User id format is wrong!"});
+            }else{
+                return  res.status(500).json({error: err});
+            }
+        }
+       
+        //check if there is a request same as you sended
+        try{
+            const existingRequest = await  FriendRequest.findOne({ $and: [{ requester: requesterId}, {recipient: recipientId} ]});
+            if(existingRequest){
+                return  res.status(400).json({error: "You already send friend request to this user!"});
+            }
+        }catch(err) {
+            console.error(err);
+            return  res.status(500).json({error: err});
+        }
+
+        //check if you are already friends together
+        try{
+
+           const existingFriend = await User.find({ $and:[{_id: requesterId}, {friends: recipientId }] });
+          console.log("existing friend: " , existingFriend);
+           if(!_.isEmpty(existingFriend)){
+            return  res.status(400).json({error: "You already friends with that user!"});
+           }
+
+        }catch(err) {
+            console.error(err);
+            return  res.status(500).json({error: err});
+        }
+
+        const friendRequest = new FriendRequest({
+            requester: requesterId,
+            requesterName,
+            recipient: recipientId,
+            status: 1 //pending
+        })
+
+        try{
+            friendRequest.save();
+            res.send(friendRequest);
+        }catch(err){
+            console.error(err);
+            return res.status(500).json({error: err});
+        }
+
+    })
+
+    //get owned friendRequests
+    app.get("/api/getFriendRequest", requireLogin, async (req,res) => {
+
+        const userId = req.user._id;
+
+        try {
+            const friendRequests = await FriendRequest.find({ $and: [{ recipient: userId}, {status: 1} ]});
+            if(_.isEmpty(friendRequests)){
+              return res.status(200).send({message: "There is no friend requests!"});
+            }else{ 
+              return  res.send(friendRequests);
+            } 
+        }catch(err){
+            console.error(err);
+            return res.status(500).send({error: err});
+        }  
+
+    })
+
+    //accept friend request
+    app.get("/api/acceptFriend/:requestId", requireLogin, async (req,res)=> {
+
+        const requestId = req.params.requestId;
+        const userId = req.user._id;
+       
+        try {
+            //look for request and change status to accepted / delete later (in progress)
+            const friendRequest = await FriendRequest.findOneAndUpdate({_id: requestId, recipient: userId, status:1 }, 
+            {
+                status: 2 //accepted
+            },  
+            {new: true});
+        
+            if(_.isEmpty(friendRequest)){
+              return res.status(404).send({error: "Can't found request!"});
+            }
+            
+            //add friend list
+            await User.findByIdAndUpdate({_id: userId}, 
+                {
+                    $push: {
+                        friends: friendRequest.requester
+                    }
+                })
+            await User.findByIdAndUpdate({_id: friendRequest.requester}, 
+                {
+                    $push: {
+                        friends: userId
+                    }
+                })
+            
+            res.send(friendRequest);
+        }catch(err){
+            console.error(err);
+            return res.status(500).send({error: err});
+        }  
+
+    })
+
+    //reject friends request
+    app.get("/api/rejectFriend/:requestId", requireLogin, async (req,res)=> {
+
+        const requestId = req.params.requestId;
+        const userId = req.user._id;
+
+        try {
+            //look for request and change status to rejected / delete later (in progress)
+            const friendRequest = await FriendRequest.findOneAndUpdate({_id: requestId, recipient: userId, status:1 }, 
+            {
+                status: 3 //rejected
+            },  
+            {new: true});
+           
+            if(_.isEmpty(friendRequest)){
+              return res.status(404).send({error: "Can't found request!"});
+            }
+            
+            res.send(friendRequest);
+        }catch(err){
+            console.error(err);
+            return res.status(500).send({error: err});
+        }  
+
+    })
+
+};

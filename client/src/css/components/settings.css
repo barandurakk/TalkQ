@@ -1,0 +1,51 @@
+.settings-icon {
+  width: 20px;
+}
+
+.settings-button {
+  cursor: pointer;
+}
+
+.settingButton-wrapper {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.settingButton-wrapper:hover {
+  background-color: rgba(256, 256, 256, 0.1);
+  border-radius: 50%;
+}
+
+.settings-submenu-container {
+  display: flex;
+  position: fixed;
+  border-radius: 5px;
+  background-color: rgba(42, 47, 50);
+  box-shadow: -3px 3px 5px #000000;
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-item {
+  padding: 15px 17px 15px 17px;
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.settings-item:hover {
+  background-color: rgba(256, 256, 256, 0.1);
+}
+
+.hidden {
+  display: none;
+}

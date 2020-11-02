@@ -1,0 +1,38 @@
+.landing-container {
+  display: flex;
+  height: 100vw;
+  width: 100%;
+}
+
+.start-container {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  width: 75%;
+  height: 350px;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 50px;
+}
+
+.start-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.landing-header {
+  text-align: center;
+  margin: 0px;
+  font-size: 2em;
+  color: #7b00ff;
+}
+
+.google-img-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.google-img {
+  width: 80%;
+}
