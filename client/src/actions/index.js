@@ -5,8 +5,11 @@ import {
   SET_ERRORS,
   STOP_LOADING_UI,
   CLEAR_ERRORS,
-  SET_REQUESTS
+  SET_REQUESTS,
+  REJECT_REQUEST
 } from "./types";
+
+//USER ACTIONS
 
 export const fetchUser = () => async (dispatch) => {
   const res = await axios.get("/api/currentUser");
@@ -17,6 +20,8 @@ export const fetchUser = () => async (dispatch) => {
 export const logoutUser = () => async (dispatch) => {
   await axios.get("/api/logout");
 }
+
+//FRIENDSHIP REQUEST ACTIONS
 
 export const sendFriendRequest = (requestForm, history) => (dispatch) => {
   dispatch({ type: LOADING_UI });
@@ -32,12 +37,22 @@ export const sendFriendRequest = (requestForm, history) => (dispatch) => {
 }
 
 export const getFriendRequests = () => dispatch => {
-  
 
   axios.get("/api/getFriendRequest").then(res=> {
     
     dispatch({ type: CLEAR_ERRORS});
     dispatch({type: SET_REQUESTS, payload: res.data})
+  }).catch(err => {
+    dispatch({ type: SET_ERRORS, payload: err.response.data });
+  });
+}
+
+export const rejectFriendRequest = (id) => dispatch => {
+
+  axios.get(`/api/rejectFriend/${id}`).then(res => {
+
+    dispatch({ type: CLEAR_ERRORS});
+    dispatch({type: REJECT_REQUEST, payload: res.data});
   }).catch(err => {
     dispatch({ type: SET_ERRORS, payload: err.response.data });
   });

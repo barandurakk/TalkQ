@@ -19,7 +19,6 @@ class Notifications extends React.Component {
     state={
         isNotification: false,
         hideSubmenu: true,
-        friendRequestsList: [],
     }
 
     componentDidMount() {
@@ -30,8 +29,11 @@ class Notifications extends React.Component {
         if (!_.isEmpty(nextProps.friendRequests)) {
           this.setState({ 
             isNotification: true,
-            friendRequestsList: nextProps.friendRequests
         });
+        }else if(_.isEmpty(nextProps.friendRequests)){
+            this.setState({ 
+                isNotification: false,
+            });
         }
       }
 
@@ -42,14 +44,16 @@ class Notifications extends React.Component {
     }
 
     renderSubmenu = () => {
-        const {friendRequestsList} = this.state;
+        const {friendRequests} = this.props;
         return(
             <div className= {`notification-submenu-container ${this.state.hideSubmenu ? "hidden" : null}`} >
                 <div className="notification-list">
                 {
-                    friendRequestsList.length > 0 ? 
+                    
+                    friendRequests && friendRequests.length > 0 ? 
                     (
-                        friendRequestsList.map(request => {
+                        friendRequests.map(request => {
+                            
                             return(
                                 <RequestItem request={request} key={request.requester} />
                             )
@@ -57,7 +61,7 @@ class Notifications extends React.Component {
                     ) 
                     : 
                     (
-                        null
+                        <p>There is no friend request</p>
                     )
                 }
                 

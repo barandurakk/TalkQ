@@ -1,4 +1,6 @@
-import {FETCH_USER, SET_REQUESTS} from "../actions/types";
+import {FETCH_USER, SET_REQUESTS,REJECT_REQUEST} from "../actions/types";
+import _ from "lodash";
+
 const initialState = {
   auth: {},
   friendRequests:{}
@@ -16,6 +18,14 @@ export default (state = initialState, action) => {
       return{
         ...state,
         friendRequests: action.payload
+      }
+
+    case REJECT_REQUEST:
+      const deletedReq = action.payload;
+      const newRequestList = state.friendRequests.filter(request => request._id !== deletedReq._id);
+      return{
+        ...state,
+        friendRequests: {...newRequestList}
       }
 
     default:

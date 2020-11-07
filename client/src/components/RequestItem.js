@@ -1,4 +1,8 @@
 import React, { Fragment } from "react";
+import {connect} from "react-redux";
+
+//actions
+import {rejectFriendRequest} from "../actions/index";
 
 //style
 import "../css/components/requestItem.css";
@@ -11,11 +15,11 @@ import RejectIcon from "../svg/errorIcon.svg"
 class RequestItem extends React.Component {
 
   handleAcceptButton = (id) => {
-    console.log(id);
+    
   }
 
   handleRejectButton = (id) => {
-    console.log(id);
+    this.props.rejectFriendRequest(id);
   }
 
   render() {
@@ -47,4 +51,4 @@ class RequestItem extends React.Component {
   }
 }
 
-export default RequestItem;
+export default connect(null, {rejectFriendRequest})(RequestItem);
