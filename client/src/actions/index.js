@@ -4,7 +4,8 @@ import {
   LOADING_UI,
   SET_ERRORS,
   STOP_LOADING_UI,
-  CLEAR_ERRORS
+  CLEAR_ERRORS,
+  SET_REQUESTS
 } from "./types";
 
 export const fetchUser = () => async (dispatch) => {
@@ -28,4 +29,16 @@ export const sendFriendRequest = (requestForm, history) => (dispatch) => {
     dispatch({ type: SET_ERRORS, payload: err.response.data });
   });
 
+}
+
+export const getFriendRequests = () => dispatch => {
+  
+
+  axios.get("/api/getFriendRequest").then(res=> {
+    
+    dispatch({ type: CLEAR_ERRORS});
+    dispatch({type: SET_REQUESTS, payload: res.data})
+  }).catch(err => {
+    dispatch({ type: SET_ERRORS, payload: err.response.data });
+  });
 }

@@ -21,7 +21,6 @@ class AddFriend extends React.Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        console.log("nextprops: ",nextProps);
         if (nextProps.errors) {
           this.setState({ 
             errors: nextProps.errors });
