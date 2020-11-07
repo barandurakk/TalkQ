@@ -27,7 +27,7 @@ class Notifications extends React.Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        if (nextProps.friendRequests) {
+        if (!_.isEmpty(nextProps.friendRequests)) {
           this.setState({ 
             isNotification: true,
             friendRequestsList: nextProps.friendRequests

@@ -8,6 +8,7 @@ class RequestItem extends React.Component {
     const {request} = this.props;
     return (
       <div className="requestItem-container">
+                 <img src={request.requesterAvatar} alt="Requester Avatar" className="requester-avatar"/>
                   {request.requesterName}
       </div>
     )

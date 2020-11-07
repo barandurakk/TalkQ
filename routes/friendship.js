@@ -12,6 +12,7 @@ module.exports = (app) => {
         const recipientId = req.body.recipient;
         const requesterId = req.user._id;
         const requesterName = req.user.name;
+        const requesterAvatar = req.user.pictureUrl;
 
         //check if the recipient is you
         if(recipientId == requesterId){
@@ -61,6 +62,7 @@ module.exports = (app) => {
             requester: requesterId,
             requesterName,
             recipient: recipientId,
+            requesterAvatar,
             status: 1 //pending
         })
 
@@ -82,7 +84,7 @@ module.exports = (app) => {
         try {
             const friendRequests = await FriendRequest.find({ $and: [{ recipient: userId}, {status: 1} ]});
             if(_.isEmpty(friendRequests)){
-              return res.status(200).send({message: "There is no friend requests!"});
+              return res.status(404).send({error: "There is no friend requests!"});
             }else{ 
               return  res.send(friendRequests);
             } 

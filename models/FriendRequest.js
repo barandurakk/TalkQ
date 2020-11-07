@@ -13,7 +13,9 @@ const  FriendRequestSchema = new Schema({
         type: String,
         required: true
     },
-    
+    requesterAvatar: {
+        type: String
+    },
     // 1. pending  2.accepted  3.rejected
     status: {
         type: Number,
