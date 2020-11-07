@@ -54,6 +54,12 @@ class Settings extends React.Component {
         })
     }
 
+    handleCancelAddFriend = () => {
+        this.setState({
+            hideAddFriend: true
+        })
+    }
+
   render() {
     return( 
     <Fragment>
@@ -68,7 +74,7 @@ class Settings extends React.Component {
         {this.renderSubmenu()}
         
         <div className={`${this.state.hideAddFriend ? "hidden" : null}`}>
-            <AddFriend />
+            <AddFriend onCancel={this.handleCancelAddFriend} />
         </div>
 
     </Fragment>

@@ -8,7 +8,6 @@
   right: 0;
   width: 30%;
   min-width: 500px;
-  height: 200px;
   background-color: rgba(42, 47, 50);
   box-shadow: -4px 4px 10px #000000;
   border-radius: 15px;
@@ -29,6 +28,7 @@
 .addFriend-form-input {
   padding: 10px 7px 10px 7px;
   border-radius: 10px;
+  margin-bottom: 10px;
 }
 
 .addFriend-form-label {
@@ -40,6 +40,54 @@
 .addFriend-form-actions {
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
+  margin-top: 30px;
   justify-content: flex-end;
+}
+
+.addFriend-buttons {
+  padding: 12px 17px 12px 17px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.sendButton {
+  background-color: #077b70;
+  color: #ffffff;
+}
+
+.sendButton:hover {
+  background-color: #054942;
+}
+
+.cancelButton:hover {
+  background-color: #d1d1d1;
+}
+
+.error-text {
+  display: inline;
+  color: #e6332a;
+  font-weight: 600;
+}
+
+.error-icon {
+  width: 20px;
+  vertical-align: middle;
+}
+
+.success-text {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 18px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.success-icon {
+  width: 30px;
+  align-self: center;
 }

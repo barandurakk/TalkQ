@@ -14,6 +14,11 @@
   justify-content: space-between;
 }
 
+.detail-icon-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
 .userAvatar {
   width: 40px;
   height: 40px;

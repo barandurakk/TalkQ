@@ -15,7 +15,7 @@ module.exports = (app) => {
 
         //check if the recipient is you
         if(recipientId == requesterId){
-            res.status(400).json({error: "You cannot send friend request to yourself!"})
+           return res.status(400).json({error: "You cannot send friend request to yourself!"})
         }
 
         //check is there a user by that id

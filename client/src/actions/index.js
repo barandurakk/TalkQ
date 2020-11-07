@@ -3,7 +3,8 @@ import {
   FETCH_USER,
   LOADING_UI,
   SET_ERRORS,
-  STOP_LOADING_UI
+  STOP_LOADING_UI,
+  CLEAR_ERRORS
 } from "./types";
 
 export const fetchUser = () => async (dispatch) => {
@@ -16,12 +17,12 @@ export const logoutUser = () => async (dispatch) => {
   await axios.get("/api/logout");
 }
 
-export const sendFriendRequest = (requestForm) => (dispatch) => {
+export const sendFriendRequest = (requestForm, history) => (dispatch) => {
   dispatch({ type: LOADING_UI });
 
   axios.post("/api/addFriend", requestForm).then(res => {
-
     dispatch({ type: STOP_LOADING_UI });
+    dispatch({ type: CLEAR_ERRORS});
 
   }).catch(err => {
     dispatch({ type: SET_ERRORS, payload: err.response.data });

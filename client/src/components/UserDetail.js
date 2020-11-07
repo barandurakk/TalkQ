@@ -8,6 +8,7 @@ import "../css/components/userDetail.css"
 
 //components
 import Settings from "./Settings";
+import Notifications from "./Notifications";
 
 let socket;
 
@@ -41,6 +42,7 @@ const UserDetail = () => {
                 <span className="userName">{auth.name}</span>
             </div>
             <div className="detail-icon-wrapper">
+                <Notifications/>
                 <Settings/>
             </div>
         </div> 

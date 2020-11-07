@@ -1,0 +1,47 @@
+.notification-icon {
+  width: 20px;
+}
+
+.notification-button {
+  cursor: pointer;
+}
+
+.notification-button-wrapper {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.notification-button-wrapper:hover {
+  background-color: rgba(256, 256, 256, 0.1);
+  border-radius: 50%;
+}
+
+.notification-exist {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #e6332a;
+  z-index: 999;
+}
+
+.hidden {
+  display: none;
+}
+
+.notification-submenu-container {
+  position: fixed;
+  top: 50px;
+  border-radius: 5px;
+  background-color: rgba(42, 47, 50);
+  box-shadow: -3px 3px 5px #000000;
+}
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+}

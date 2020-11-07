@@ -22,6 +22,7 @@
 .settings-submenu-container {
   display: flex;
   position: fixed;
+  top: 50px;
   border-radius: 5px;
   background-color: rgba(42, 47, 50);
   box-shadow: -3px 3px 5px #000000;
