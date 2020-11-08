@@ -127,7 +127,7 @@ module.exports = (app) => {
                     }
                 })
             
-            res.send(friendRequest);
+            res.status(200).send(requestId);
         }catch(err){
             console.error(err);
             return res.status(500).send({error: err});

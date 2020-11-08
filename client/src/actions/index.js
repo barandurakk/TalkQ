@@ -6,7 +6,8 @@ import {
   STOP_LOADING_UI,
   CLEAR_ERRORS,
   SET_REQUESTS,
-  REJECT_REQUEST
+  REJECT_REQUEST,
+  ACCEPT_REQUEST
 } from "./types";
 
 //USER ACTIONS
@@ -40,7 +41,7 @@ export const getFriendRequests = () => dispatch => {
 
   axios.get("/api/getFriendRequest").then(res=> {
     
-    dispatch({ type: CLEAR_ERRORS});
+    
     dispatch({type: SET_REQUESTS, payload: res.data})
   }).catch(err => {
     console.log(err);
@@ -55,5 +56,15 @@ export const rejectFriendRequest = (id) => dispatch => {
     dispatch({type: REJECT_REQUEST, payload: res.data});
   }).catch(err => {
     dispatch({ type: SET_ERRORS, payload: err.response.data });
+  });
+}
+
+export const acceptFriendRequest = id => dispatch => {
+
+  axios.get(`/api/acceptFriend/${id}`).then(res => {
+    
+    dispatch({type: ACCEPT_REQUEST, payload: res.data})
+  }).catch(err => {
+    console.log(err);
   });
 }
