@@ -43,7 +43,7 @@ export const getFriendRequests = () => dispatch => {
     dispatch({ type: CLEAR_ERRORS});
     dispatch({type: SET_REQUESTS, payload: res.data})
   }).catch(err => {
-    dispatch({ type: SET_ERRORS, payload: err.response.data });
+    console.log(err);
   });
 }
 

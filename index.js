@@ -67,6 +67,11 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("notification", `${username} is online!`)
   });
 
+  socket.on("newFriendRequest", (friendId) => {
+    console.log(friendId);
+    io.emit("newFriend", friendId);
+  });
+
   //run when client disconnect
   socket.on("disconnect", () => {
     console.log("a user is offline!");

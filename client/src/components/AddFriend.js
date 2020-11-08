@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import {connect} from "react-redux";
+import io from "socket.io-client";
 import _ from "lodash";
 
 //actions
@@ -21,10 +22,10 @@ class AddFriend extends React.Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        if (nextProps.errors) {
+        if (nextProps.errors.sendError) {
           this.setState({ 
-            errors: nextProps.errors });
-        }else if(!nextProps.errors && !nextProps.loading){
+            errors: nextProps.errors.sendError });
+        }else if(!nextProps.errors.sendError && !nextProps.loading){
             this.setState({success: true});
         }
       }
@@ -40,6 +41,9 @@ class AddFriend extends React.Component {
             recipient: this.state.friendId
         }
             this.props.sendFriendRequest(requestForm);
+            let socket;
+            socket = io.connect("localhost:5000");
+            socket.emit("newFriendRequest", this.state.friendId);
        
    
     }
@@ -88,7 +92,7 @@ class AddFriend extends React.Component {
                         {!_.isEmpty(errors) ? 
                         (<div>
                             <img src={ErrorIcon} alt="Error Icon" className="error-icon" />
-                            <p className="error-text"> {errors.error}</p>
+                            <p className="error-text"> {errors}</p>
                         </div>)
                         :
                         (null)}

@@ -16,20 +16,20 @@ module.exports = (app) => {
 
         //check if the recipient is you
         if(recipientId == requesterId){
-           return res.status(400).json({error: "You cannot send friend request to yourself!"})
+           return res.status(400).json({sendError: "You cannot send friend request to yourself!"})
         }
 
         //check is there a user by that id
         try{
             const recipient = await User.findOne({_id: recipientId});
             if(!recipient){
-                return  res.status(404).json({error: "No user find by that Id"});
+                return  res.status(404).json({sendError: "No user find by that Id"});
             }
         }catch(err){
             if(err.kind === "ObjectId"){
-                return res.status(400).json({error: "User id format is wrong!"});
+                return res.status(400).json({sendError: "User id format is wrong!"});
             }else{
-                return  res.status(500).json({error: err});
+                return  res.status(500).json({sendError: err});
             }
         }
        
@@ -37,11 +37,11 @@ module.exports = (app) => {
         try{
             const existingRequest = await  FriendRequest.findOne({ $and: [{ requester: requesterId}, {recipient: recipientId} ]});
             if(existingRequest){
-                return  res.status(400).json({error: "You already send friend request to this user!"});
+                return  res.status(400).json({sendError: "You already send friend request to this user!"});
             }
         }catch(err) {
             console.error(err);
-            return  res.status(500).json({error: err});
+            return  res.status(500).json({sendError: err});
         }
 
         //check if you are already friends together
@@ -50,12 +50,12 @@ module.exports = (app) => {
            const existingFriend = await User.find({ $and:[{_id: requesterId}, {friends: recipientId }] });
           console.log("existing friend: " , existingFriend);
            if(!_.isEmpty(existingFriend)){
-            return  res.status(400).json({error: "You already friends with that user!"});
+            return  res.status(400).json({sendError: "You already friends with that user!"});
            }
 
         }catch(err) {
             console.error(err);
-            return  res.status(500).json({error: err});
+            return  res.status(500).json({sendError: err});
         }
 
         const friendRequest = new FriendRequest({
@@ -71,7 +71,7 @@ module.exports = (app) => {
             res.send(friendRequest);
         }catch(err){
             console.error(err);
-            return res.status(500).json({error: err});
+            return res.status(500).json({sendError: err});
         }
 
     })
@@ -84,13 +84,13 @@ module.exports = (app) => {
         try {
             const friendRequests = await FriendRequest.find({ $and: [{ recipient: userId}, {status: 1} ]});
             if(_.isEmpty(friendRequests)){
-              return res.status(404).send({error: "There is no friend requests!"});
+              return res.status(404);
             }else{ 
               return  res.send(friendRequests);
             } 
         }catch(err){
             console.error(err);
-            return res.status(500).send({error: err});
+            return res.status(500).send({getNotificationError: err});
         }  
 
     })

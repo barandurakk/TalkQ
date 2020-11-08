@@ -41,10 +41,15 @@ const UserDetail = () => {
                 <img src={auth.pictureUrl} className="userAvatar"/>
                 <span className="userName">{auth.name}</span>
             </div>
-            <div className="detail-icon-wrapper">
+            {!_.isEmpty(auth) ? (
+                <div className="detail-icon-wrapper">
                 <Notifications/>
                 <Settings/>
             </div>
+            ):(
+                null
+            )}
+            
         </div> 
         <span className="userId">User ID:<strong> {auth._id}</strong></span>
           

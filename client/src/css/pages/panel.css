@@ -14,3 +14,25 @@
   overflow-y: scroll;
   overflow-x: hidden;
 }
+
+.select-container {
+  width: 100%;
+  height: 40px;
+  background-color: #077b70;
+}
+
+.select-buttons {
+  background-color: #077b70;
+  border: none;
+  cursor: pointer;
+  width: 50%;
+  height: 40px;
+  color: #013f39;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.select-buttons:hover {
+  background-color: #013f39;
+  color: #ffffff;
+}
