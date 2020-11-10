@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import {connect} from "react-redux";
 import io from "socket.io-client";
 import _ from "lodash";
+import keys from "../config/keys";
 
 //actions
 import {sendFriendRequest} from "../actions/index";
@@ -42,7 +43,7 @@ class AddFriend extends React.Component {
         }
             this.props.sendFriendRequest(requestForm);
             let socket;
-            socket = io.connect("localhost:5000");
+            socket = io.connect(keys.ENDPOINT);
             socket.emit("newFriendRequest", this.state.friendId);
        
    

@@ -2,6 +2,7 @@ import React, {Fragment} from "react";
 import {connect} from "react-redux";
 import _ from "lodash";
 import io from 'socket.io-client';
+import keys from "../config/keys";
 
 
 //components
@@ -23,21 +24,30 @@ class Notifications extends React.Component {
     state={
         isNotification: false,
         hideSubmenu: true,
-        friendRequestList: {}
+        friendRequestList: {},
+        onlineAlert: ""
     }
 
-    componentWillMount(){ 
+    componentWillMount(){  
         this.props.getFriendRequests();
-        this.socket = io.connect(`http://localhost:5000`);
+        this.socket = io.connect(keys.ENDPOINT); 
     }
 
     componentDidMount() {
         const {auth} = this.props;   
+        this.socket.emit("notification", {username: auth.name, userId: auth._id});
         this.socket.on("newFriend", (friendId) => {
             if(friendId === auth._id){
                 this.props.getFriendRequests();
             }
         })
+        this.socket.on("onlineAlert", user => {
+            if(auth.friends.includes(user.userId)){
+                this.setState({onlineAlert: user.username});
+            }   
+       })
+       
+       
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -88,7 +98,7 @@ class Notifications extends React.Component {
     }
 
   render() {
-      const {isNotification} = this.state;
+      const {isNotification, onlineAlert} = this.state;
     return <Fragment>
     <div className="notification-button-wrapper">
         <span 
@@ -100,7 +110,14 @@ class Notifications extends React.Component {
         </span>
     </div>
     {this.renderSubmenu()}
-
+    {onlineAlert ? (
+        <div className="alert-container">
+            <span className="alert-message">{onlineAlert} is online now!</span>
+        </div>
+    ):(
+        null
+    )}
+    
 </Fragment>
   }
 }

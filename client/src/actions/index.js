@@ -7,8 +7,33 @@ import {
   CLEAR_ERRORS,
   SET_REQUESTS,
   REJECT_REQUEST,
-  ACCEPT_REQUEST
+  ACCEPT_REQUEST,
+  FETCH_FRIENDS,
+  DELETE_FRIEND
 } from "./types";
+
+//FRIENDSHIP ACTIONS
+
+export const fetchFriends = () =>  dispatch => {
+
+  dispatch({ type: LOADING_UI });
+axios.get("/api/friends").then(res => {
+  dispatch({ type: STOP_LOADING_UI });
+  dispatch({type: FETCH_FRIENDS, payload: res.data});
+  
+}).catch(err => {
+  console.log(err);
+});
+
+}
+
+export const deleteFriend = (id) => dispatch => {
+  axios.get(`/api/friends/delete/${id}`).then(res => {
+    dispatch({type: DELETE_FRIEND, payload: id});
+  }).catch(err => {
+    console.log(err);
+  });
+}
 
 //USER ACTIONS
 

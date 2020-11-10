@@ -6,6 +6,81 @@ const FriendRequest = mongoose.model("friendRequest");
 const User = mongoose.model("users")
 
 module.exports = (app) => {
+
+    //FRIENDSHIPS
+
+    //fetch all users friends
+    app.get("/api/friends", requireLogin, async (req,res) => {
+
+        const userId = req.user._id;
+
+        try{
+            const friendList = await User.aggregate([
+                {
+                    $match: {_id: userId}
+                },
+                {
+                    $lookup:
+                    {
+                        from: "users",
+                        localField: "friends",
+                        foreignField: "_id",
+                        as: "friends_info"
+                    }
+                },
+                {
+                    $unwind: "$friends_info"
+                },
+                {
+                    $project: 
+                    {
+                        friends_info: {name:"$friends_info.name", pictureUrl: "$friends_info.pictureUrl",  _id: "$friends_info._id"},
+                        _id: 0
+                    }
+                }
+            ])
+
+            res.send(friendList);
+        }catch(err){
+            console.error(err);
+            res.status(500);
+        }
+    })
+
+    //delete a users friends
+    app.get("/api/friends/delete/:friendId", requireLogin, (req,res) => {
+
+        const userId= req.user._id;
+        const friendId = req.params.friendId;
+
+            if(userId == friendId){
+               return res.status(400).send({deleteError: "You can't delete yourself in friendship"})
+            }
+
+            //find user and delete friend by id
+            User.findByIdAndUpdate({_id: userId},{
+                $pull: {friends: friendId}
+            }).then(() => {
+                User.findByIdAndUpdate({_id: friendId}, 
+                    {
+                        $pull: {friends: userId}
+                    }).then(() => {
+                        return res.status(200).send(friendId);
+                    }).catch(err => {
+                        console.error(err);
+                        return res.status(500).send();
+                    }) 
+                   
+            }).catch(err => {
+                console.error(err);
+                return res.status(500).send();
+            }) 
+
+    })
+
+
+
+    //FRIEND REQUESTS
     
     //send a friend request
     app.post("/api/addFriend", requireLogin, async (req,res) => {
@@ -48,7 +123,7 @@ module.exports = (app) => {
         try{
 
            const existingFriend = await User.find({ $and:[{_id: requesterId}, {friends: recipientId }] });
-          console.log("existing friend: " , existingFriend);
+          
            if(!_.isEmpty(existingFriend)){
             return  res.status(400).json({sendError: "You already friends with that user!"});
            }
@@ -101,38 +176,44 @@ module.exports = (app) => {
         const requestId = req.params.requestId;
         const userId = req.user._id;
        
-        try {
-            //look for request and change status to accepted / delete later (in progress)
-            const friendRequest = await FriendRequest.findOneAndUpdate({_id: requestId, recipient: userId, status:1 }, 
-            {
-                status: 2 //accepted
-            },  
-            {new: true});
-        
-            if(_.isEmpty(friendRequest)){
-              return res.status(404).send({error: "Can't found request!"});
-            }
             
-            //add friend list
-            await User.findByIdAndUpdate({_id: userId}, 
-                {
-                    $push: {
-                        friends: friendRequest.requester
-                    }
-                })
-            await User.findByIdAndUpdate({_id: friendRequest.requester}, 
-                {
-                    $push: {
-                        friends: userId
-                    }
-                })
-            
-            res.status(200).send(requestId);
-        }catch(err){
-            console.error(err);
-            return res.status(500).send({error: err});
-        }  
+        FriendRequest.findOneAndDelete({_id: requestId, recipient: userId, status:1 }
+            )
+            .then(result => {
 
+                    console.log("result: ", result);
+                    if(!result){
+                        return res.status(404).send({error: "Can't found request!"});
+                    }
+
+                        //add friend list
+                        User.findOneAndUpdate({_id: userId, friends: {$exists: true, $nin: [result.requester]}}, 
+                            {
+                                $push: {
+                                    friends: result.requester
+                                }
+                            }).then(() => {
+                                User.findOneAndUpdate({_id: result.requester, friends: {$exists: true, $nin: [userId]}}, 
+                                    {
+                                        $push: {
+                                            friends: userId
+                                        }
+                                    }).then(()=> {
+                                        return res.status(200).send(requestId);
+                                    }).catch(err => {
+                                        console.error(err);
+                                        return res.status(500).send({error: err});
+                                    })
+
+                            }).catch(err => {
+                                console.error(err);
+                                return res.status(500).send({error: err});
+                            })
+            }).catch(err => {
+                console.error(err);
+                return res.status(500).send({error: err});
+            })
+                
     })
 
     //reject friends request

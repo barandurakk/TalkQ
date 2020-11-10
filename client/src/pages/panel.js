@@ -1,5 +1,5 @@
-import React, {Fragment, useState, useEffect} from "react";
-import { useDispatch } from 'react-redux'
+import React, {useState, useEffect} from "react";
+import { useDispatch } from 'react-redux';
 
 //components
 import UserDetail from "../components/UserDetail";
@@ -7,10 +7,11 @@ import ConversationList from "../components/ConversationList";
 import FriendList from "../components/FriendList";
 
 //actions
-import {fetchUser} from "../actions/index";
+import {fetchUser, fetchFriends} from "../actions/index";
 
 //style
 import "../css/pages/panel.css";
+
 
 const Panel = () => {
 
@@ -18,14 +19,14 @@ const Panel = () => {
      const dispatch = useDispatch();
 
     useEffect(() => {  
-        dispatch(fetchUser());    
+        dispatch(fetchUser()); 
+        dispatch(fetchFriends());
     }, [])
 
 
     return (
     <div className="main-container">
         <div className="left-container">
-        
             <UserDetail/>
 
             <div className="select-container">

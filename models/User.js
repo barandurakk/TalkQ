@@ -7,7 +7,7 @@ const userSchema = new Schema({
   pictureUrl: { type: String },
   role: { type: String, default: "User" },
   dateRegister: { type: Date, default: Date.now() },
-  friends : [String]
+  friends : [mongoose.Schema.ObjectId]
 });
 
 mongoose.model("users", userSchema);

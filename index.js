@@ -63,12 +63,11 @@ const io = socketIo(http);
 //run when client connects
 io.on("connection", (socket) => {
 
-  socket.on("online", ({username}) => {
-    socket.broadcast.emit("notification", `${username} is online!`)
+  socket.on("notification", (username) => {
+    socket.broadcast.emit("onlineAlert", username);
   });
 
   socket.on("newFriendRequest", (friendId) => {
-    console.log(friendId);
     io.emit("newFriend", friendId);
   });
 

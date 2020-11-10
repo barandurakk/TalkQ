@@ -11,7 +11,7 @@ class Landing extends React.Component {
       <div className="start-container">
         <div className="start-wrapper">
       <p className="landing-header">Sign in and start <strong>chatting!</strong></p>
-      <a href="/auth/google" className="google-img-wrapper"><img src={googlepic} className="google-img" /></a>
+      <a href="/auth/google" className="google-img-wrapper"><img src={googlepic} alt="GoogleSignIn" className="google-img" /></a>
       </div>
       </div>
       

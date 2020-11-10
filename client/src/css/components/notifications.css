@@ -33,6 +33,15 @@
   display: none;
 }
 
+.alert-container {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  max-width: 200px;
+  padding: 5px;
+  background-color: #131c21;
+}
+
 .notification-submenu-container {
   position: fixed;
   top: 50px;

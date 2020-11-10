@@ -3,9 +3,9 @@ const { Schema } = mongoose;
 
 const conversationSchema = new Schema({
   lastMessage: { type: String },
-  owner: { type: Schema.Types.ObjectId, ref: "users" },
+  owner: { type: Schema.Types.ObjectId },
   createdAt: { type: String, default: Date.now() },
-  recipients: [{ type: Schema.Types.ObjectId, ref: "users" }],
+  recipients: [Schema.Types.ObjectId],
 });
 
 mongoose.model("conversations", conversationSchema);

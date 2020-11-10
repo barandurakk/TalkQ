@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "12.13.x",
-    "npm": "6.12.x"
+    "node": "10.16.x",
+    "npm": "6.13.x"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
