@@ -75,3 +75,58 @@
   z-index: 999;
   left: 10px;
 }
+
+.deleteFriend-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background-color: #2a2f32;
+  box-shadow: -4px 4px 10px #000000;
+  border-top: 10px solid #077b70;
+  border-radius: 15px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding: 25px 40px 25px 40px;
+}
+
+.deleteFriend-title {
+  color: #ffffff;
+  font-size: 20px;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 35px;
+}
+
+.deleteFriend-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.confirmDelete-button {
+  padding: 10px 30px 10px 30px;
+  color: #ffffff;
+  background-color: #e5222b;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.confirmDelete-button:hover {
+  background-color: #911319;
+}
+
+.cancelDelete-button {
+  padding: 10px 30px 10px 30px;
+  color: #ffffff;
+  background-color: #878787;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.cancelDelete-button:hover {
+  background-color: #666565;
+}

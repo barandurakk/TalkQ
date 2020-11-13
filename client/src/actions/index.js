@@ -32,6 +32,7 @@ axios.get("/api/friends").then(res => {
 export const deleteFriend = (id) => dispatch => {
   axios.get(`/api/friends/delete/${id}`).then(res => {
     dispatch({type: DELETE_FRIEND, payload: id});
+    socket.emit("deleteFriend", id);
   }).catch(err => {
     console.log(err);
   });
@@ -71,19 +72,19 @@ export const getFriendRequests = () => dispatch => {
 
   axios.get("/api/getFriendRequest").then(res=> {
     
-    
     dispatch({type: SET_REQUESTS, payload: res.data})
   }).catch(err => {
     console.log(err);
   });
 }
 
-export const rejectFriendRequest = (id) => dispatch => {
+export const rejectFriendRequest = (id,request,username) => dispatch => {
 
   axios.get(`/api/rejectFriend/${id}`).then(res => {
 
     dispatch({ type: CLEAR_ERRORS});
     dispatch({type: REJECT_REQUEST, payload: res.data});
+    socket.emit("rejectRequest", {friendId: request.requester, username: username});
   }).catch(err => {
     dispatch({ type: SET_ERRORS, payload: err.response.data });
   });

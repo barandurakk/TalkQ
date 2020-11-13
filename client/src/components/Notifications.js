@@ -33,7 +33,6 @@ class Notifications extends React.Component {
         
         socket.on("newFriend", (friendId) => {
             if(friendId === auth._id){
-                console.log("Friend Request!!");
                 this.props.getFriendRequests();
             }   
         })
@@ -45,10 +44,18 @@ class Notifications extends React.Component {
             }   
        })
 
+       socket.on("deleteFriend", () => {
+        this.props.fetchFriends();
+   })
+
        socket.on("requestAccepted", (username) => {
            this.props.fetchFriends();
            openSnackbar(`${username} accepted your friend request!`)
        })
+
+       socket.on("requestRejected", (username) => {
+        openSnackbar(`${username} declined your friend request!`)
+    })
        
        
     }

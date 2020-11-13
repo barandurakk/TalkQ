@@ -156,17 +156,16 @@ module.exports = (app) => {
 
         const userId = req.user._id;
 
-        try {
-            const friendRequests = await FriendRequest.find({ $and: [{ recipient: userId}, {status: 1} ]});
-            if(_.isEmpty(friendRequests)){
-              return res.status(404);
-            }else{ 
-              return  res.send(friendRequests);
-            } 
-        }catch(err){
+        FriendRequest.find({ $and: [{ recipient: userId}, {status: 1} ]}).then(result => {
+            if(!result){
+                return res.status(404);
+              }else{ 
+                return  res.send(result);
+              } 
+        }).catch(err => {
             console.error(err);
             return res.status(500).send({getNotificationError: err});
-        }  
+        })
 
     })
 

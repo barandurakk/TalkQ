@@ -12,8 +12,34 @@ import "../css/components/friendItem.css"
 
 class FriendItem extends React.Component {
 
+    state= {
+        showDeletePopup: false
+    }
+
     handleDeleteButton = (id) => {
         this.props.deleteFriend(id);
+    }
+
+    handleCancelDeleteButton = () => {
+        this.setState({showDeletePopup: false});
+    }
+
+    renderDeletePopup = (name, id) => {
+        return(
+        <div className="deleteFriend-container">
+            <span className="deleteFriend-title">{name} will no longer be your friend ?</span>
+            <div className="deleteFriend-actions">
+                <button
+                className="cancelDelete-button"
+                onClick={()=> this.handleCancelDeleteButton()}
+                >Cancel</button>
+                <button
+                className="confirmDelete-button"
+                onClick={()=> this.handleDeleteButton(id)}
+                >Delete</button>
+            </div>
+        </div>
+        )
     }
 
   render() {
@@ -31,12 +57,13 @@ class FriendItem extends React.Component {
             <div className="friend-action-wrapper">
                 <span
                 className="delete-button"
-                onClick={()=> this.handleDeleteButton(friend._id)}
+                onClick={()=> this.setState({showDeletePopup: true})}
                 ><img src={DeleteIcon} alt="SettingsIcon" className="delete-icon"/></span>
             </div>
             
         </div>
         <hr className="friend-divider"/>
+        {this.state.showDeletePopup ? this.renderDeletePopup(friend.name,friend._id ) : (null)}
      </Fragment>
     )
   }

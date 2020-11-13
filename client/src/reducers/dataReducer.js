@@ -16,6 +16,7 @@ export default (state = initialState, action) => {
       }
 
     case SET_REQUESTS:
+      console.log("hey, request reducer: ", action.payload);
       return{
         ...state,
         friendRequests: action.payload
@@ -26,7 +27,7 @@ export default (state = initialState, action) => {
       let newRequestList = state.friendRequests.filter(request => request._id !== deletedReq._id);
       return{
         ...state,
-        friendRequests: {...newRequestList}
+        friendRequests: newRequestList
       }
 
       case ACCEPT_REQUEST:
@@ -34,11 +35,11 @@ export default (state = initialState, action) => {
         let newRequestList0 = state.friendRequests.filter(request => request._id !== acceptedReq);
         return{
           ...state,
-          friendRequests: {...newRequestList0}
+          friendRequests: newRequestList0
         }
 
       case FETCH_FRIENDS:
-        console.log("fetch friend reducer: ", action.payload);
+       
         return {
           ...state,
           friends: action.payload
@@ -46,8 +47,12 @@ export default (state = initialState, action) => {
 
       case DELETE_FRIEND:
         const deletedFriendId= action.payload;
-        return{
-          ...state
+       
+       let newFriendList = state.friends.filter(friend => friend.friends_info._id !== deletedFriendId);
+       console.log(newFriendList); 
+       return{
+          ...state,
+          friends: newFriendList
         }
 
 

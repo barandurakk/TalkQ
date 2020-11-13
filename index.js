@@ -63,7 +63,6 @@ const io = socketIo(http, {wsEngine: "ws"});
 //run when client connects
 const User = mongoose.model("users")
 io.on("connection", async (socket) => {
-  console.log("client is: ", socket.id);
 
 
   socket.on("notification", async (user) => {
@@ -79,6 +78,16 @@ io.on("connection", async (socket) => {
   socket.on("acceptRequest", async (details)=> {
     const friendSocketId = await User.findOne({_id:details.friendId},{socketId:1});
     io.to(friendSocketId.socketId).emit("requestAccepted", (details.username));
+  });
+
+  socket.on("rejectRequest", async (details)=> {
+    const friendSocketId = await User.findOne({_id:details.friendId},{socketId:1});
+    io.to(friendSocketId.socketId).emit("requestRejected", (details.username));
+  });
+
+  socket.on("deleteFriend", async (friendId)=> {
+    const friendSocketId = await User.findOne({_id:friendId},{socketId:1});
+    io.to(friendSocketId.socketId).emit("deleteFriend");
   });
 
   //run when client disconnect

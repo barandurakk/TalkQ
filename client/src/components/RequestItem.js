@@ -22,7 +22,8 @@ class RequestItem extends React.Component {
   }
 
   handleRejectButton = (id) => {
-    this.props.rejectFriendRequest(id);
+    const {request,username} = this.props;
+    this.props.rejectFriendRequest(id, request, username);
   }
 
   render() {
