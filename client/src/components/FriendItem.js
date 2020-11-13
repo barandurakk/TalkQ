@@ -13,7 +13,6 @@ import "../css/components/friendItem.css"
 class FriendItem extends React.Component {
 
     handleDeleteButton = (id) => {
-        console.log(id);
         this.props.deleteFriend(id);
     }
 

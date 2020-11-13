@@ -1,6 +1,7 @@
 import React from "react";
 import { Router, Route } from "react-router-dom";
 import createBrowserHistory from "history/createBrowserHistory";
+import SnackbarProvider from "react-simple-snackbar";
 
 //components
 
@@ -12,10 +13,12 @@ export const history = createBrowserHistory();
 class App extends React.Component {
   render() {
     return (
+      <SnackbarProvider>
       <Router history={history}>
         <Route exact path="/" component={Landing} />
         <Route exact path="/panel" component={Panel} />
       </Router>
+      </SnackbarProvider>
     );
   }
 }

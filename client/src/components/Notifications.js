@@ -1,15 +1,15 @@
 import React, {Fragment} from "react";
 import {connect} from "react-redux";
 import _ from "lodash";
-import io from 'socket.io-client';
-import keys from "../config/keys";
+import {socket} from "../config/socket";
+import {withSnackbar} from "react-simple-snackbar";
 
 
 //components
 import RequestItem from "./RequestItem";
 
 //actions
-import {getFriendRequests} from "../actions/index";
+import {getFriendRequests, fetchFriends} from "../actions/index";
 
 //style
 import "../css/components/notifications.css"
@@ -25,26 +25,29 @@ class Notifications extends React.Component {
         isNotification: false,
         hideSubmenu: true,
         friendRequestList: {},
-        onlineAlert: ""
-    }
-
-    componentWillMount(){  
-        this.props.getFriendRequests();
-        this.socket = io.connect(keys.ENDPOINT); 
     }
 
     componentDidMount() {
-        const {auth} = this.props;   
-        this.socket.emit("notification", {username: auth.name, userId: auth._id});
-        this.socket.on("newFriend", (friendId) => {
+        this.props.getFriendRequests(); 
+        const {auth, openSnackbar} = this.props;  
+        
+        socket.on("newFriend", (friendId) => {
             if(friendId === auth._id){
+                console.log("Friend Request!!");
                 this.props.getFriendRequests();
-            }
-        })
-        this.socket.on("onlineAlert", user => {
-            if(auth.friends.includes(user.userId)){
-                this.setState({onlineAlert: user.username});
             }   
+        })
+        socket.on("onlineAlert", user => {
+            if(auth.friends.includes(user.userId)){
+               
+                openSnackbar(`${user.username} is online now!`)
+
+            }   
+       })
+
+       socket.on("requestAccepted", (username) => {
+           this.props.fetchFriends();
+           openSnackbar(`${username} accepted your friend request!`)
        })
        
        
@@ -72,6 +75,7 @@ class Notifications extends React.Component {
 
     renderSubmenu = () => {
         const {friendRequestList} = this.state;
+        const {auth} = this.props;  
         return(
             <div className= {`notification-submenu-container ${this.state.hideSubmenu ? "hidden" : null}`} >
                 <div className="notification-list">
@@ -82,7 +86,7 @@ class Notifications extends React.Component {
                         friendRequestList.map(request => {
                             
                             return(
-                                <RequestItem request={request} key={request.requester} />
+                                <RequestItem request={request} key={request.requester} username={auth.name} />
                             )
                         })
                     ) 
@@ -98,7 +102,8 @@ class Notifications extends React.Component {
     }
 
   render() {
-      const {isNotification, onlineAlert} = this.state;
+      const {isNotification} = this.state;
+    
     return <Fragment>
     <div className="notification-button-wrapper">
         <span 
@@ -110,13 +115,6 @@ class Notifications extends React.Component {
         </span>
     </div>
     {this.renderSubmenu()}
-    {onlineAlert ? (
-        <div className="alert-container">
-            <span className="alert-message">{onlineAlert} is online now!</span>
-        </div>
-    ):(
-        null
-    )}
     
 </Fragment>
   }
@@ -131,4 +129,17 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, {getFriendRequests})(Notifications);
+const alertOptions = {
+    position: 'bottom-right',
+    style: {
+      borderLeft: '10px solid #077b70',
+      fontSize: '16px',
+      fontWeight: 600,
+      textAlign: 'left',
+    },
+    closeStyle: {
+      fontSize: '16px',
+    },
+}
+
+export default connect(mapStateToProps, {getFriendRequests,fetchFriends})(withSnackbar(Notifications, alertOptions));

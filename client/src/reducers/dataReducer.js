@@ -38,6 +38,7 @@ export default (state = initialState, action) => {
         }
 
       case FETCH_FRIENDS:
+        console.log("fetch friend reducer: ", action.payload);
         return {
           ...state,
           friends: action.payload
@@ -45,7 +46,6 @@ export default (state = initialState, action) => {
 
       case DELETE_FRIEND:
         const deletedFriendId= action.payload;
-        console.log(state.friends);
         return{
           ...state
         }

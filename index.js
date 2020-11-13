@@ -58,22 +58,33 @@ app.post("/api/upload", multerMid.single("avatar"), fileUploader);
 /* -- */
 
 //socket io
-const io = socketIo(http);
+const io = socketIo(http, {wsEngine: "ws"});
 
 //run when client connects
-io.on("connection", (socket) => {
+const User = mongoose.model("users")
+io.on("connection", async (socket) => {
+  console.log("client is: ", socket.id);
 
-  socket.on("notification", (username) => {
-    socket.broadcast.emit("onlineAlert", username);
+
+  socket.on("notification", async (user) => {
+    socket.broadcast.emit("onlineAlert", user);
+    await User.findByIdAndUpdate({_id:user.userId},{isOnline:true, socketId: socket.id});
   });
 
-  socket.on("newFriendRequest", (friendId) => {
-    io.emit("newFriend", friendId);
+  socket.on("newFriendRequest", async (friendId) => {
+    const friendSocketId = await User.findOne({_id:friendId},{socketId:1});
+    io.to(friendSocketId.socketId).emit("newFriend", (friendId));
+  });
+
+  socket.on("acceptRequest", async (details)=> {
+    const friendSocketId = await User.findOne({_id:details.friendId},{socketId:1});
+    io.to(friendSocketId.socketId).emit("requestAccepted", (details.username));
   });
 
   //run when client disconnect
   socket.on("disconnect", () => {
     console.log("a user is offline!");
+    User.findOneAndUpdate({socketId: socket.id}, {isOnline: false, socketId:null});
   })
 })
 

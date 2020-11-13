@@ -7,7 +7,9 @@ const userSchema = new Schema({
   pictureUrl: { type: String },
   role: { type: String, default: "User" },
   dateRegister: { type: Date, default: Date.now() },
-  friends : [mongoose.Schema.ObjectId]
+  friends : [mongoose.Schema.ObjectId],
+  isOnline: {type:Boolean, default:false, required: true},
+  socketId: {type:String}
 });
 
 mongoose.model("users", userSchema);

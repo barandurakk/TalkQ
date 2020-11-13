@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import {connect} from "react-redux";
-import io from "socket.io-client";
 import _ from "lodash";
 import keys from "../config/keys";
+import {socket} from "../config/socket";
 
 //actions
 import {sendFriendRequest} from "../actions/index";
@@ -19,39 +19,36 @@ class AddFriend extends React.Component {
     state= {
         friendId: "",
         errors: {},
-        success: false
+        success: 1 //1. uncertain //2.true //3. false
     }
+
+    //else if(!nextProps.errors.sendError && !nextProps.loading){
+    //    this.setState({success: true});
+    //}
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.errors.sendError) {
           this.setState({ 
-            errors: nextProps.errors.sendError });
-        }else if(!nextProps.errors.sendError && !nextProps.loading){
-            this.setState({success: true});
+            errors: nextProps.errors.sendError, success: 3 });
         }
       }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        //clear previous errors
-        this.setState({ 
-            errors: {} });
-
         const requestForm = {
             recipient: this.state.friendId
         }
-            this.props.sendFriendRequest(requestForm);
-            let socket;
-            socket = io.connect(keys.ENDPOINT);
-            socket.emit("newFriendRequest", this.state.friendId);
+            this.props.sendFriendRequest(requestForm, this.state.friendId);
+            this.setState({success:2})
+            
        
    
     }
 
     handleClose = () => {
         this.setState({friendId: "", errors: {},
-        success: false });
+        success: 1 });
         this.props.onCancel();
     }
 
@@ -62,7 +59,7 @@ class AddFriend extends React.Component {
         <div className="addFriend-container">
             <h1 className="addFriend-title">Add Friend</h1>
                 
-                {success === true ? (
+                {success === 2 ? (
                     <Fragment>
                         
                         <img src={SuccessIcon} alt="Success Icon" className="success-icon" />
@@ -80,7 +77,7 @@ class AddFriend extends React.Component {
                         </div>
                     </Fragment>
                    
-                ):(
+                ): success === 1 || success === 3 ? (
                     <form noValidate onSubmit={this.handleSubmit} className="addFriend-form">
                         <label  className="addFriend-form-label">Friend ID: </label>
                         <input type="text" 
@@ -120,7 +117,7 @@ class AddFriend extends React.Component {
                             }
                         </div>
                     </form>
-                )} 
+                ): (null)} 
         </div>
     )
   }

@@ -12,6 +12,8 @@ import {
   DELETE_FRIEND
 } from "./types";
 
+import {socket} from "../config/socket";
+
 //FRIENDSHIP ACTIONS
 
 export const fetchFriends = () =>  dispatch => {
@@ -40,6 +42,8 @@ export const deleteFriend = (id) => dispatch => {
 export const fetchUser = () => async (dispatch) => {
   const res = await axios.get("/api/currentUser");
 
+  socket.emit("notification", {username: res.data.name, userId: res.data._id});
+
   dispatch({ type: FETCH_USER, payload: res.data });
 };
 
@@ -49,12 +53,13 @@ export const logoutUser = () => async (dispatch) => {
 
 //FRIENDSHIP REQUEST ACTIONS
 
-export const sendFriendRequest = (requestForm, history) => (dispatch) => {
+export const sendFriendRequest = (requestForm, friendId) => (dispatch) => {
   dispatch({ type: LOADING_UI });
 
   axios.post("/api/addFriend", requestForm).then(res => {
     dispatch({ type: STOP_LOADING_UI });
     dispatch({ type: CLEAR_ERRORS});
+    socket.emit("newFriendRequest",(friendId));
 
   }).catch(err => {
     dispatch({ type: SET_ERRORS, payload: err.response.data });
@@ -84,11 +89,12 @@ export const rejectFriendRequest = (id) => dispatch => {
   });
 }
 
-export const acceptFriendRequest = id => dispatch => {
+export const acceptFriendRequest = (id,request,username) => dispatch => {
 
   axios.get(`/api/acceptFriend/${id}`).then(res => {
-    
+    dispatch(fetchFriends());
     dispatch({type: ACCEPT_REQUEST, payload: res.data})
+    socket.emit("acceptRequest", {friendId: request.requester, username: username});
   }).catch(err => {
     console.log(err);
   });

@@ -181,7 +181,6 @@ module.exports = (app) => {
             )
             .then(result => {
 
-                    console.log("result: ", result);
                     if(!result){
                         return res.status(404).send({error: "Can't found request!"});
                     }
