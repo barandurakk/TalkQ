@@ -85,6 +85,8 @@ class Notifications extends React.Component {
         const {auth} = this.props;  
         return(
             <div className= {`notification-submenu-container ${this.state.hideSubmenu ? "hidden" : null}`} >
+                <span className="request-title">FRIEND REQUESTS</span>
+                <hr/>
                 <div className="notification-list">
                 {
                     
@@ -99,7 +101,7 @@ class Notifications extends React.Component {
                     ) 
                     : 
                     (
-                        <p>There is no friend request</p>
+                        <p className="noRequest-title">There is no friend request</p>
                     )
                 }
                 

@@ -44,6 +44,8 @@
 
 .notification-submenu-container {
   position: fixed;
+  text-align: center;
+  padding: 5px 10px 0px 10px;
   top: 50px;
   border-radius: 5px;
   background-color: rgba(42, 47, 50);
@@ -53,4 +55,24 @@
 .notification-list {
   display: flex;
   flex-direction: column;
+}
+
+.noRequest-title {
+  font-size: 16px;
+  color: #fff;
+}
+
+.request-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+}
+
+hr {
+  width: 90%;
+  border: 0;
+  height: 1px;
+  background-color: #3f3f3f;
+  margin: 10px auto;
 }

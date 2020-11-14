@@ -36,11 +36,11 @@
 }
 
 .request-divider {
-  width: 85%;
+  width: 90%;
   border: 0;
   height: 1px;
   background-color: #3f3f3f;
-  margin: 0px;
+  margin: auto;
 }
 
 .accept-button {
