@@ -11,8 +11,11 @@
   max-width: 400px;
   background-color: #131c21;
   height: 100vh;
-  overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.right-container {
+  width: 100%;
 }
 
 .select-container {

@@ -7,6 +7,8 @@ import FriendItem from "./FriendItem";
 //style
 import "../css/components/friendList.css";
 
+
+
 class FriendList extends React.Component {
 
   state={
@@ -14,7 +16,6 @@ class FriendList extends React.Component {
   }
   
   UNSAFE_componentWillReceiveProps(nextProps){
-    console.log(nextProps);
     if(nextProps.friends){
       this.setState({friends: nextProps.friends})
     }
@@ -24,7 +25,13 @@ class FriendList extends React.Component {
     return <div className="friendList-container">
             {
               this.state.friends.map(friend => {
-                return <FriendItem friend={friend.friends_info} key={friend.friends_info._id} />
+                return <div
+                        key={friend.friends_info._id}
+                        onClick={() => this.props.selectFriend(friend.friends_info)}
+                        >
+                        <FriendItem 
+                        friend={friend.friends_info}/>
+                      </div>
               })
             }
     </div>

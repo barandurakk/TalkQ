@@ -6,9 +6,13 @@ const messageSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "conservations",
   },
+  to: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
   from: {
     type: Schema.Types.ObjectId,
-    ref: "users",
+    required: true
   },
   body: {
     type: String,
@@ -17,10 +21,6 @@ const messageSchema = new Schema({
   dateSent: {
     type: String,
     default: Date.now(),
-  },
-  user_avatar: {
-    type:String,
-    required: false
   }
 });
 

@@ -48,7 +48,7 @@ class FriendItem extends React.Component {
      <Fragment>
         <div className="friendItem-container">
             <div className="friend-avatar-wrapper">
-            <img src={friend.pictureUrl} alt="friend Avatar" className="friend-avatar"/>
+            <img src={friend.pictureUrl} alt="friend Avatar" className={`friend-avatar`}/>
             </div>
             <div className="friend-info-wrapper">
                 <span className="friend-name">{friend.name}</span>

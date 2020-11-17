@@ -34,7 +34,13 @@ module.exports = (app) => {
                 {
                     $project: 
                     {
-                        friends_info: {name:"$friends_info.name", pictureUrl: "$friends_info.pictureUrl",  _id: "$friends_info._id"},
+                        friends_info: 
+                            {name:"$friends_info.name", 
+                            pictureUrl: "$friends_info.pictureUrl", 
+                             _id: "$friends_info._id", 
+                            isOnline:"$friends_info.isOnline",
+                            socketId: "$friends_info.socketId",
+                        },
                         _id: 0
                     }
                 }

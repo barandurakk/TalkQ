@@ -9,7 +9,11 @@ import {
   REJECT_REQUEST,
   ACCEPT_REQUEST,
   FETCH_FRIENDS,
-  DELETE_FRIEND
+  DELETE_FRIEND,
+  SELECT_CONVERSATION,
+  FETCH_CONVERSATIONS,
+  FETCH_MESSAGES,
+  CREATE_MESSAGE
 } from "./types";
 
 import {socket} from "../config/socket";
@@ -99,4 +103,44 @@ export const acceptFriendRequest = (id,request,username) => dispatch => {
   }).catch(err => {
     console.log(err);
   });
+}
+
+//CHAT ACTIONS
+
+export const createConversation = (recipients) => dispatch => {
+
+  axios.post("/api/conversation/create", recipients).then(res => {
+
+  })
+
+}
+
+export const fetchConversations = () => dispatch => {
+  dispatch({ type: LOADING_UI });
+  axios.get("/api/conversations/all").then(res => {
+    dispatch({type: FETCH_CONVERSATIONS, payload:res.data});
+    dispatch({ type: STOP_LOADING_UI });
+  }).catch(err => {
+    console.log(err);
+  });
+}
+
+export const fetchMessages = (friendId) => dispatch => {
+  dispatch({ type: LOADING_UI });
+  axios.post("/api/messages/get", {friendId}).then(res => {
+    dispatch({ type: STOP_LOADING_UI });
+    dispatch({type: FETCH_MESSAGES, payload: res.data});
+  }).catch(err => {
+    console.log(err);
+    dispatch({ type: STOP_LOADING_UI });
+  });
+
+}
+
+export const createMessage = (message) => dispatch => {
+  axios.post("/api/message/new", message).then(res => {
+    dispatch({ type: CREATE_MESSAGE, payload: res.data });
+  }).catch(err=> {
+    console.log(err);
+  })
 }

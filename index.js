@@ -61,39 +61,71 @@ app.post("/api/upload", multerMid.single("avatar"), fileUploader);
 const io = socketIo(http, {wsEngine: "ws"});
 
 //run when client connects
+var connectedUsers = {}; 
 const User = mongoose.model("users")
 io.on("connection", async (socket) => {
 
 
-  socket.on("notification", async (user) => {
+  socket.on("notification", async (user) => { 
+
+    connectedUsers[user.userId] = socket;
     socket.broadcast.emit("onlineAlert", user);
-    await User.findByIdAndUpdate({_id:user.userId},{isOnline:true, socketId: socket.id});
+
+    // User.findByIdAndUpdate({_id:user.userId},{isOnline:true, socketId: socket.id}).then(()=> {
+    //   socket.broadcast.emit("onlineAlert", user);
+    // }).catch(err => {
+    //   console.error(err);
+    // })
   });
 
+  //chat
+
+ socket.on("sendMessage", async (message) => {
+   
+    connectedUsers[message.to].emit("getMessage", (message));
+   
+});
+
+  //friendship 
   socket.on("newFriendRequest", async (friendId) => {
-    const friendSocketId = await User.findOne({_id:friendId},{socketId:1});
-    io.to(friendSocketId.socketId).emit("newFriend", (friendId));
+    User.findOne({_id:friendId},{socketId:1}).then((res) =>{
+      io.to(res.socketId).emit("newFriend", (friendId));
+    }).catch(err => {
+      console.error(err);
+    })
   });
 
   socket.on("acceptRequest", async (details)=> {
-    const friendSocketId = await User.findOne({_id:details.friendId},{socketId:1});
-    io.to(friendSocketId.socketId).emit("requestAccepted", (details.username));
+    User.findOne({_id:details.friendId},{socketId:1}).then(res => {
+      io.to(res.socketId).emit("requestAccepted", (details.username));
+    }).catch(err => {
+      console.error(err);
+    })
+    
   });
 
   socket.on("rejectRequest", async (details)=> {
-    const friendSocketId = await User.findOne({_id:details.friendId},{socketId:1});
-    io.to(friendSocketId.socketId).emit("requestRejected", (details.username));
+    User.findOne({_id:details.friendId},{socketId:1}).then(res => {
+      io.to(res.socketId).emit("requestRejected", (details.username));
+    }).catch(err => {
+      console.error(err);
+    })
+    
   });
 
   socket.on("deleteFriend", async (friendId)=> {
-    const friendSocketId = await User.findOne({_id:friendId},{socketId:1});
-    io.to(friendSocketId.socketId).emit("deleteFriend");
+    User.findOne({_id:friendId},{socketId:1}).then(res => {
+      io.to(res.socketId).emit("deleteFriend");
+    }).catch(err => {
+      console.error(err);
+    })
+    
   });
 
   //run when client disconnect
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     console.log("a user is offline!");
-    User.findOneAndUpdate({socketId: socket.id}, {isOnline: false, socketId:null});
+    await User.findOneAndUpdate({socketId: socket.id}, {isOnline: false, socketId:null});
   })
 })
 
