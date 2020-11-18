@@ -70,55 +70,48 @@ io.on("connection", async (socket) => {
 
     connectedUsers[user.userId] = socket;
     socket.broadcast.emit("onlineAlert", user);
-
-    // User.findByIdAndUpdate({_id:user.userId},{isOnline:true, socketId: socket.id}).then(()=> {
-    //   socket.broadcast.emit("onlineAlert", user);
-    // }).catch(err => {
-    //   console.error(err);
-    // })
   });
 
   //chat
 
  socket.on("sendMessage", async (message) => {
-   
+   if(connectedUsers[message.to]){
     connectedUsers[message.to].emit("getMessage", (message));
+   }
+    
    
 });
 
   //friendship 
   socket.on("newFriendRequest", async (friendId) => {
-    User.findOne({_id:friendId},{socketId:1}).then((res) =>{
-      io.to(res.socketId).emit("newFriend", (friendId));
-    }).catch(err => {
-      console.error(err);
-    })
+
+    if(connectedUsers[friendId]){
+      connectedUsers[friendId].emit("newFriend", (friendId));
+     }
+
   });
 
   socket.on("acceptRequest", async (details)=> {
-    User.findOne({_id:details.friendId},{socketId:1}).then(res => {
-      io.to(res.socketId).emit("requestAccepted", (details.username));
-    }).catch(err => {
-      console.error(err);
-    })
+
+    if(connectedUsers[details.friendId]){
+      connectedUsers[details.friendId].emit("requestAccepted", (details.username));
+     }
     
   });
 
   socket.on("rejectRequest", async (details)=> {
-    User.findOne({_id:details.friendId},{socketId:1}).then(res => {
-      io.to(res.socketId).emit("requestRejected", (details.username));
-    }).catch(err => {
-      console.error(err);
-    })
+
+    if(connectedUsers[details.friendId]){
+      connectedUsers[details.friendId].emit("requestRejected", (details.username));
+    }
     
   });
 
   socket.on("deleteFriend", async (friendId)=> {
-    User.findOne({_id:friendId},{socketId:1}).then(res => {
-      io.to(res.socketId).emit("deleteFriend");
-    }).catch(err => {
-      console.error(err);
-    })
+
+    if(connectedUsers[friendId]){
+      connectedUsers[friendId].emit("deleteFriend");
+    }
     
   });
 

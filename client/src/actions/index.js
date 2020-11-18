@@ -10,10 +10,13 @@ import {
   ACCEPT_REQUEST,
   FETCH_FRIENDS,
   DELETE_FRIEND,
-  SELECT_CONVERSATION,
   FETCH_CONVERSATIONS,
   FETCH_MESSAGES,
-  CREATE_MESSAGE
+  CREATE_MESSAGE,
+  LOADING_CHAT,
+  STOP_LOADING_CHAT,
+  LOADING_DATA,
+  STOP_LOADING_DATA
 } from "./types";
 
 import {socket} from "../config/socket";
@@ -22,9 +25,9 @@ import {socket} from "../config/socket";
 
 export const fetchFriends = () =>  dispatch => {
 
-  dispatch({ type: LOADING_UI });
+  dispatch({ type: LOADING_DATA });
 axios.get("/api/friends").then(res => {
-  dispatch({ type: STOP_LOADING_UI });
+  dispatch({ type: STOP_LOADING_DATA });
   dispatch({type: FETCH_FRIENDS, payload: res.data});
   
 }).catch(err => {
@@ -44,12 +47,16 @@ export const deleteFriend = (id) => dispatch => {
 
 //USER ACTIONS
 
-export const fetchUser = () => async (dispatch) => {
-  const res = await axios.get("/api/currentUser");
+export const fetchUser = () => (dispatch) => {
+  dispatch({ type: LOADING_DATA });
 
-  socket.emit("notification", {username: res.data.name, userId: res.data._id});
-
-  dispatch({ type: FETCH_USER, payload: res.data });
+  axios.get("/api/currentUser").then(res => {
+    dispatch({ type: STOP_LOADING_DATA });
+    dispatch({ type: FETCH_USER, payload: res.data });
+    socket.emit("notification", {username: res.data.name, userId: res.data._id});
+  }).catch(err => {
+    dispatch({ type: SET_ERRORS, payload: err.response.data });
+  });
 };
 
 export const logoutUser = () => async (dispatch) => {
@@ -107,14 +114,6 @@ export const acceptFriendRequest = (id,request,username) => dispatch => {
 
 //CHAT ACTIONS
 
-export const createConversation = (recipients) => dispatch => {
-
-  axios.post("/api/conversation/create", recipients).then(res => {
-
-  })
-
-}
-
 export const fetchConversations = () => dispatch => {
   dispatch({ type: LOADING_UI });
   axios.get("/api/conversations/all").then(res => {
@@ -126,9 +125,9 @@ export const fetchConversations = () => dispatch => {
 }
 
 export const fetchMessages = (friendId) => dispatch => {
-  dispatch({ type: LOADING_UI });
+  dispatch({ type: LOADING_CHAT });
   axios.post("/api/messages/get", {friendId}).then(res => {
-    dispatch({ type: STOP_LOADING_UI });
+    dispatch({ type: STOP_LOADING_CHAT });
     dispatch({type: FETCH_MESSAGES, payload: res.data});
   }).catch(err => {
     console.log(err);
@@ -140,6 +139,7 @@ export const fetchMessages = (friendId) => dispatch => {
 export const createMessage = (message) => dispatch => {
   axios.post("/api/message/new", message).then(res => {
     dispatch({ type: CREATE_MESSAGE, payload: res.data });
+    dispatch(fetchConversations()); //reload conversations
   }).catch(err=> {
     console.log(err);
   })

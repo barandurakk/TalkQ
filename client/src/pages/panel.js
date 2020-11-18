@@ -16,7 +16,19 @@ import "../css/pages/panel.css";
 
 
 const handleSelectFriend = (friend, setSelectFriend) => {
-    setSelectFriend(friend);
+    if(friend.constructor === Array){
+        
+        friend.map(friend => {
+            if(friend){
+                setSelectFriend(friend);
+            }
+        })
+    }else{
+        
+        setSelectFriend(friend);
+    }
+   
+    
 }
 
 const Panel = () => {
@@ -47,7 +59,9 @@ const Panel = () => {
             </div>
 
             {selectedList === 0 ? (
-                <ConversationList/>
+                <ConversationList selectFriend={(friend) => {
+                    handleSelectFriend(friend, setSelectFriend);
+                }}/>
 
             ): selectedList === 1 ? (
                 <FriendList selectFriend={(friend) => {
@@ -56,7 +70,6 @@ const Panel = () => {
             ) : (null)}
             
             
-        {console.log("selected friend(panel.js): ",selectFriend )}
         </div>
         <div className="right-container">
                 

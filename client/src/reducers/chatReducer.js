@@ -1,18 +1,20 @@
-import { SELECT_CONVERSATION, FETCH_CONVERSATIONS,FETCH_MESSAGES,CREATE_MESSAGE } from "../actions/types";
+import {
+  CREATE_CONVERSATION , 
+  FETCH_CONVERSATIONS,
+  FETCH_MESSAGES,
+  CREATE_MESSAGE,
+  LOADING_CHAT,
+  STOP_LOADING_CHAT
+  } from "../actions/types";
 
 const initialState = {
-  selectedConversation: {},
   conversations: [],
-  messages: []
+  messages: [],
+  loading: false
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case SELECT_CONVERSATION:
-      return {
-        ...state,
-        selectedConversation: action.payload
-      };
 
     case FETCH_CONVERSATIONS:
       return {
@@ -32,6 +34,24 @@ export default (state = initialState, action) => {
           
           return {
               ...state
+          }
+
+      case LOADING_CHAT:
+        return {
+          ...state,
+          loading: true
+        }
+
+        case STOP_LOADING_CHAT:
+        return {
+          ...state,
+          loading: false
+        }
+
+      case CREATE_CONVERSATION:
+          return {
+              ...state,
+              conversations: [...state.conversations, action.payload]
           }
 
     default:

@@ -9,7 +9,7 @@ import {withSnackbar} from "react-simple-snackbar";
 import RequestItem from "./RequestItem";
 
 //actions
-import {getFriendRequests, fetchFriends} from "../actions/index";
+import {getFriendRequests, fetchFriends, fetchConversations} from "../actions/index";
 
 //style
 import "../css/components/notifications.css"
@@ -57,6 +57,10 @@ class Notifications extends React.Component {
         openSnackbar(`${username} declined your friend request!`)
     })
        
+    socket.on("getMessage", message => {
+        console.log("message COME! notification ");
+        this.props.fetchConversations(); //reload conversations
+    })
        
     }
 
@@ -151,4 +155,4 @@ const alertOptions = {
     },
 }
 
-export default connect(mapStateToProps, {getFriendRequests,fetchFriends})(withSnackbar(Notifications, alertOptions));
+export default connect(mapStateToProps, {getFriendRequests,fetchFriends, fetchConversations})(withSnackbar(Notifications, alertOptions));

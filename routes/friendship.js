@@ -39,7 +39,6 @@ module.exports = (app) => {
                             pictureUrl: "$friends_info.pictureUrl", 
                              _id: "$friends_info._id", 
                             isOnline:"$friends_info.isOnline",
-                            socketId: "$friends_info.socketId",
                         },
                         _id: 0
                     }

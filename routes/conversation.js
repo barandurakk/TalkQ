@@ -2,7 +2,7 @@ const passport = require("passport");
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const requireLogin = require("../middlewares/requireLogin");
-const dayjs = require("dayjs")
+const dayjs = require("dayjs");
 
 const User = mongoose.model("users");
 const Conversation = mongoose.model("conversations");
@@ -12,7 +12,7 @@ module.exports = (app) => {
 
   //MESSAGES
 
-  //get messages by user
+  //get messages with a user
   app.post("/api/messages/get", requireLogin, async (req,res) => {
 
     const friendId = req.body.friendId;
@@ -51,6 +51,29 @@ module.exports = (app) => {
           dateSent: new Date().toISOString(),
       })
 
+
+      //check if there is a conversation with these messages.. if exist update last message, if not create one
+      try{
+        const existingConversation = await Conversation.findOneAndUpdate(
+          {$or:[{recipients: [from,to]},{recipients: [to,from]}]},
+          {
+            lastMessage: {dateSent: new Date().toISOString(), body: body}
+          },{new: true})
+
+          if(!existingConversation){
+            const conversation = new Conversation ({
+              recipients: [ mongoose.Types.ObjectId(from), mongoose.Types.ObjectId(to)],
+              createdAt: new Date().toISOString(),
+              lastMessage: {body: body, dateSent: new Date().toISOString()}
+          })
+          conversation.save();
+          }
+
+      }catch(err){
+        console.error(err);
+      }
+      
+
       await message.save();
       res.send(message);
   })
@@ -62,14 +85,19 @@ module.exports = (app) => {
   })
 
 
+
   //CONVERSATIONS
 
   //get all conversations user's owned or being recipient
   app.get("/api/conversations/all", requireLogin, async (req, res) => {
     const user = req.user;
     const conversations = await Conversation.find({
-      $or: [{ owner: user._id, recipients: user._id }],
-    });
+      recipients: user._id
+    },{
+      
+    },{
+      sort: {"lastMessage.dateSent": -1}
+    }).populate("recipients", "_id name pictureUrl");
     if (!conversations) {
       res.status(404).send({ error: "Sahip olduğunuz veya içinde bulunduğunuz bir konuşma yok!" });
     } else {
@@ -79,18 +107,19 @@ module.exports = (app) => {
 
   //create a conversation
   app.post("/api/conversation/create", requireLogin, async (req, res) => {
-    const user = req.user;
-    console.log(req.body);
-    const { recipients } = req.body;
+    const userId = req.user._id;
+    const friendId = req.body.friendId;
+    const lastMessage = req.body.lastMessage;
 
-    const existingConv = await Conversation.findOne({recipients: recipients});
+    const existingConv = await Conversation.findOne({ $or:[{recipients: [friendId, userId]},{recipients: [userId, friendId]}]});
     if(existingConv){
       return res.status(400).send(existingConv._id);
     }
 
     const conversation = new Conversation({
-      recipients,
-      createdAt: Date.now(),
+      recipients: [ mongoose.Types.ObjectId(userId), mongoose.Types.ObjectId(friendId)],
+      createdAt: new Date().toISOString(),
+      lastMessage: {body: lastMessage.body, dateSent:lastMessage.dateSent }
     });
 
     await conversation.save();

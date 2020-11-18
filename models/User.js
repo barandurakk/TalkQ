@@ -9,7 +9,6 @@ const userSchema = new Schema({
   dateRegister: { type: Date, default: Date.now() },
   friends : [mongoose.Schema.ObjectId],
   isOnline: {type:Boolean, default:false, required: true},
-  socketId: {type:String}
 });
 
 mongoose.model("users", userSchema);

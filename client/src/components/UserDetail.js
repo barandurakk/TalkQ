@@ -17,42 +17,47 @@ import CopyIcon from "../svg/copyIcon.svg"
 
 const UserDetail = () => {
     const auth = useSelector(state=> state.data.auth);
+    const loading = useSelector(state => state.data.loading);
     const [openSnackbar, closeSnackbar] = useSnackbar();
   
 
     return (
-    <div className="userDetail-container">
-        <div className="userDetail-top">
-            <div className="userDetail">
-                <img src={auth.pictureUrl} className="userAvatar" alt="User Avatar"/>
-                <span className="userName">{auth.name}</span>
-            </div>
-            {!_.isEmpty(auth) ? (
-                <div className="detail-icon-wrapper">
-                <Notifications/>
-                <Settings/>
-            </div>
-            ):(
-                null
-            )}
-            
-        </div> 
-        <div className="userId-container">
-            <span className="userId">
-                ID:<strong> {auth._id}</strong>
-            </span>
-            <CopyToClipboard 
-                text={auth._id}
-                onCopy={() => openSnackbar("User ID Copied!")}
-            >
-                <div className="copyIcon-wrapper" >
-                    <img src={CopyIcon} alt="copyIcon" className="copy-icon" />
+        !loading ? (
+            <div className="userDetail-container">
+            <div className="userDetail-top">
+                <div className="userDetail">
+                    <img src={auth.pictureUrl} className="userAvatar" alt="User Avatar"/>
+                    <span className="userName">{auth.name}</span>
                 </div>
-             </CopyToClipboard> 
+                {!_.isEmpty(auth) ? (
+                    <div className="detail-icon-wrapper">
+                    <Notifications/>
+                    <Settings/>
+                </div>
+                ):(
+                    null
+                )}
+                
+            </div> 
+            <div className="userId-container">
+                <span className="userId">
+                    ID:<strong> {auth._id}</strong>
+                </span>
+                <CopyToClipboard 
+                    text={auth._id}
+                    onCopy={() => openSnackbar("User ID Copied!")}
+                >
+                    <div className="copyIcon-wrapper" >
+                        <img src={CopyIcon} alt="copyIcon" className="copy-icon" />
+                    </div>
+                 </CopyToClipboard> 
+            </div>
+            
+              
         </div>
-        
-          
-    </div>
+        ):(
+            <p>Loading</p>
+        )
     )
 }
 

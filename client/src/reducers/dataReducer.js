@@ -1,14 +1,27 @@
-import {FETCH_USER, SET_REQUESTS,REJECT_REQUEST,ACCEPT_REQUEST, FETCH_FRIENDS,DELETE_FRIEND} from "../actions/types";
+import {FETCH_USER, SET_REQUESTS,REJECT_REQUEST,ACCEPT_REQUEST, FETCH_FRIENDS,DELETE_FRIEND,LOADING_DATA,STOP_LOADING_DATA} from "../actions/types";
 import _ from "lodash";
 
 const initialState = {
   auth: {},
   friendRequests:{},
-  friends: []
+  friends: [],
+  loading: false
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case LOADING_DATA:
+      return {
+        ...state,
+        loading: true
+      }
+
+      case STOP_LOADING_DATA:
+      return {
+        ...state,
+        loading: false
+      }
+
     case FETCH_USER:
       return {
         ...state,
@@ -16,7 +29,6 @@ export default (state = initialState, action) => {
       }
 
     case SET_REQUESTS:
-      console.log("hey, request reducer: ", action.payload);
       return{
         ...state,
         friendRequests: action.payload
