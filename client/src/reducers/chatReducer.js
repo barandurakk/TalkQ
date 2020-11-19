@@ -48,7 +48,12 @@ export default (state = initialState, action) => {
       conversations.splice(indexOfComing, 1);
     
       //update last message 
-      selectedConversation.lastMessage.body = body;
+      if( body.length > 36 ){
+        selectedConversation.lastMessage.body = `${body.substr(0,35)}...`;
+      }else{
+        selectedConversation.lastMessage.body = body;
+      }
+     
      
       //create a new list 
       updatedConvList = [selectedConversation, ...conversations]

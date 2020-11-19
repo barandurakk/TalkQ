@@ -4,6 +4,7 @@
   height: 100vh;
   width: 100%;
   overflow: hidden;
+  min-width: 450px;
 }
 
 .chatbox-topbar {
@@ -64,8 +65,62 @@
 
 .chatbox-messages-container {
   height: 100%;
-  overflow-y: scroll;
   background-color: #0d1418;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.comingMessage-box {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.comingMessage-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+  border-radius: 15px;
+  background-color: #373f44;
+  margin: 15px 30px 15px 30px;
+}
+
+.sendingMessage-box {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sendingMessage-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+  border-radius: 15px;
+  background-color: #077b70;
+  margin: 15px 30px 15px 30px;
+}
+
+.text-container {
+  text-align: left;
+  padding: 10px 30px;
+  max-width: 600px !important;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+}
+.message-text {
+  margin-right: 20px;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.message-time-container {
+  display: flex;
+  padding: 0px 20px 10px 0px;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.message-time {
+  color: #b2b9be;
+  font-size: 11px;
 }
 
 .chatbox-input-container {

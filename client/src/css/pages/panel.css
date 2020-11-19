@@ -15,7 +15,9 @@
 }
 
 .right-container {
+  min-width: 450px;
   width: 100%;
+  overflow-x: scroll;
 }
 
 .select-container {

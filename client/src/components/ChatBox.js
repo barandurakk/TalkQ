@@ -1,4 +1,4 @@
-import React, {Fragment} from "react";
+import React, {Fragment } from "react";
 
 import {socket} from "../config/socket";
 import dayjs from "dayjs";
@@ -16,21 +16,27 @@ import {fetchMessages,createMessage} from "../actions/index";
 
 class ChatBox extends React.Component{
 
-    state= {
-        newMessage:[],
-        loading: false,
-        body: "",
-        friend:{}
+    constructor(props){
+        super(props);
+        this.state= {
+            newMessage:[],
+            loading: false,
+            body: "",
+            friend:{}
+        }
+        this.chatBottom = React.createRef();
+        
     }
 
-
     UNSAFE_componentWillReceiveProps(nextProps){
+        
         if(nextProps.friend._id !== this.props.friend._id){
             this.props.fetchMessages(nextProps.friend._id);
         }
         if(nextProps.messages !== this.props.messages){
             console.log("messages changed!");
             this.setState({newMessage: nextProps.messages});
+            
         }
         if(nextProps.loading){
             this.setState({loading: true})
@@ -45,8 +51,13 @@ class ChatBox extends React.Component{
             console.log("message COME!");
             if(message.from === this.props.friend._id){
                 this.setState({newMessage: [...this.state.newMessage, message]});         
-            }           
+            }   
+            this.scrollToBottom();        
         })
+    }
+
+    scrollToBottom = () => {
+        this.chatBottom.current.scrollIntoView({ behavior: "smooth" });
     }
 
     handleSendButton = (friend, body, from) => {
@@ -60,7 +71,8 @@ class ChatBox extends React.Component{
          socket.emit("sendMessage", message);//send it real-time to friend
          this.setState({newMessage: [...this.state.newMessage, message]}) //show your message to screen
          this.props.createMessage(message, this.props.conversations);//send it to database  
-         this.setState({body: ""})
+         this.setState({body: ""});
+         this.scrollToBottom();
      }
 
     render(){
@@ -92,17 +104,33 @@ class ChatBox extends React.Component{
                            
                              if(message.from === auth._id){
                                  return (
-                                     <div className="comingMessage-container" key={Math.random()}>
-                                         
-                                        sent: {message.body}
-                                             
-                                     </div>
+                                        <div className="sendingMessage-box">
+                                        <div className="sendingMessage-container" key={Math.random()}>    
+                               
+                                            <div className="text-container">
+                                                <span className="message-text">{message.body}</span>
+                                            </div>
+                                            
+                                            <div className="message-time-container">
+                                                <span className="message-time">{dayjs(message.dateSent).format("HH:mm")}</span> 
+                                            </div>                                 
+                                        </div>
+                                        </div>
+                                     
                                  )
                              }else {
                                  return(
-                                     <div className="sendingMessage-container" key={Math.random()}>
-                                     comming : {message.body}
-                                     </div>
+                                    <div className="comingMessage-box">
+                                        <div className="comingMessage-container" key={Math.random()}>
+                                            <div className="text-container">
+                                                <span className="message-text">{message.body}</span> 
+                                            </div>
+                                            <div className="message-time-container">
+                                                <span className="message-time">{dayjs(message.dateSent).format("HH:mm")}</span> 
+                                            </div> 
+                                        </div>
+                                        </div>
+                                     
                                  )
                                
                              }
@@ -112,6 +140,7 @@ class ChatBox extends React.Component{
                  (
                      <p>Send a message to {friend.name}</p>
                  )}
+                  <div ref={this.chatBottom} />
              </div>
              <div className="chatbox-input-container">
              {loading ? (
