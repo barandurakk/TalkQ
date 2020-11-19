@@ -1,8 +1,6 @@
 import React, { Fragment } from "react";
 import {connect} from "react-redux";
 import _ from "lodash";
-import keys from "../config/keys";
-import {socket} from "../config/socket";
 
 //actions
 import {sendFriendRequest} from "../actions/index";

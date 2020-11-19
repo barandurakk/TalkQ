@@ -1,5 +1,4 @@
 import {FETCH_USER, SET_REQUESTS,REJECT_REQUEST,ACCEPT_REQUEST, FETCH_FRIENDS,DELETE_FRIEND,LOADING_DATA,STOP_LOADING_DATA} from "../actions/types";
-import _ from "lodash";
 
 const initialState = {
   auth: {},

@@ -4,7 +4,8 @@ import {
   FETCH_MESSAGES,
   CREATE_MESSAGE,
   LOADING_CHAT,
-  STOP_LOADING_CHAT
+  STOP_LOADING_CHAT,
+  UPDATE_CONVERSATIONS
   } from "../actions/types";
 
 const initialState = {
@@ -17,9 +18,45 @@ export default (state = initialState, action) => {
   switch (action.type) {
 
     case FETCH_CONVERSATIONS:
+      
       return {
           ...state,
           conversations: action.payload
+      }
+
+    case UPDATE_CONVERSATIONS:
+      
+        const from = action.payload.from;
+        const to = action.payload.to;
+        const body = action.payload.body;
+        let indexOfComing;
+        let selectedConversation;
+        let conversations = state.conversations;
+        let updatedConvList;
+        
+            //find the conversation index has a new message
+            // eslint-disable-next-line
+          conversations.map((conversation, x) => {
+          
+          if(conversation.recipients_info._id === from || conversation.recipients_info._id === to){
+            selectedConversation = conversation;
+            indexOfComing = x;
+          }
+      })
+      
+      //create a conversation list without selected conversation
+      conversations.splice(indexOfComing, 1);
+    
+      //update last message 
+      selectedConversation.lastMessage.body = body;
+     
+      //create a new list 
+      updatedConvList = [selectedConversation, ...conversations]
+        
+   
+      return{
+        ...state,
+        conversations: updatedConvList
       }
 
       case FETCH_MESSAGES:

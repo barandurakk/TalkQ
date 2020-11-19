@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import {connect} from "react-redux";
-import {socket} from "../config/socket";
 
 //actions
 import {rejectFriendRequest, acceptFriendRequest, fetchFriends} from "../actions/index";

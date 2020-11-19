@@ -16,7 +16,8 @@ import {
   LOADING_CHAT,
   STOP_LOADING_CHAT,
   LOADING_DATA,
-  STOP_LOADING_DATA
+  STOP_LOADING_DATA,
+  UPDATE_CONVERSATIONS
 } from "./types";
 
 import {socket} from "../config/socket";
@@ -136,11 +137,23 @@ export const fetchMessages = (friendId) => dispatch => {
 
 }
 
-export const createMessage = (message) => dispatch => {
+export const createMessage = (message, conversations) => dispatch => {
   axios.post("/api/message/new", message).then(res => {
     dispatch({ type: CREATE_MESSAGE, payload: res.data });
-    dispatch(fetchConversations()); //reload conversations
+    if(conversations.length > 1){
+      dispatch(updateConversations(message)); //reload conversations in reducer
+    }else {
+      dispatch(fetchConversations());
+    }
+    
   }).catch(err=> {
     console.log(err);
   })
+}
+
+
+export const updateConversations = (message) => dispatch => {
+
+  dispatch({ type: UPDATE_CONVERSATIONS, payload: message });
+
 }

@@ -34,7 +34,7 @@ module.exports = (app) => {
 
   })
 
-  //post a message
+  //post a message  (if no friend cant send!--will be added)
   app.post("/api/message/new", requireLogin, async (req,res) => {
       const from = req.body.from;
       const to = req.body.to;
@@ -55,7 +55,8 @@ module.exports = (app) => {
       //check if there is a conversation with these messages.. if exist update last message, if not create one
       try{
         const existingConversation = await Conversation.findOneAndUpdate(
-          {$or:[{recipients: [from,to]},{recipients: [to,from]}]},
+         // {$or:[{recipients: [from,to]},{recipients: [to,from]}]},  // another slower way
+         { recipients: { $all: [ from, to ] } },
           {
             lastMessage: {dateSent: new Date().toISOString(), body: body}
           },{new: true})
@@ -91,16 +92,52 @@ module.exports = (app) => {
   //get all conversations user's owned or being recipient
   app.get("/api/conversations/all", requireLogin, async (req, res) => {
     const user = req.user;
-    const conversations = await Conversation.find({
-      recipients: user._id
-    },{
-      
-    },{
-      sort: {"lastMessage.dateSent": -1}
-    }).populate("recipients", "_id name pictureUrl");
+
+    const conversations = await Conversation.aggregate([
+      {
+       $match: {recipients: {$elemMatch: {$in:[user._id]}}}
+      },
+      {
+        $lookup:
+        {
+          from: "users",
+          localField: "recipients",
+          foreignField: "_id",
+          as: "recipients_info"
+        }
+      },
+      {
+        $unwind: "$recipients_info"
+      },  
+      {
+        $match: {"recipients_info._id": {
+                  "$ne":user._id
+                }
+      }
+      },
+      {
+        $project: {
+          _id: 1,
+          createdAt: 1,
+          lastMessage: 1,
+          recipients_info:{
+            _id: "$recipients_info._id",
+            name: "$recipients_info.name",
+            pictureUrl: "$recipients_info.pictureUrl",
+          }
+        }
+      },
+      {
+        $sort: {
+          "lastMessage.dateSent": -1
+        }
+      }
+    ])
+
     if (!conversations) {
       res.status(404).send({ error: "Sahip olduğunuz veya içinde bulunduğunuz bir konuşma yok!" });
     } else {
+      
       res.send(conversations);
     }
   });

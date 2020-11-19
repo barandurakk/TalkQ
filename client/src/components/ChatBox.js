@@ -4,7 +4,6 @@ import {socket} from "../config/socket";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {connect} from "react-redux";
-import _ from "lodash"
 
 //style
 import "../css/components/chatBox.css"
@@ -26,7 +25,6 @@ class ChatBox extends React.Component{
 
 
     UNSAFE_componentWillReceiveProps(nextProps){
-        console.log("nextProps: ", nextProps);
         if(nextProps.friend._id !== this.props.friend._id){
             this.props.fetchMessages(nextProps.friend._id);
         }
@@ -61,13 +59,14 @@ class ChatBox extends React.Component{
        
          socket.emit("sendMessage", message);//send it real-time to friend
          this.setState({newMessage: [...this.state.newMessage, message]}) //show your message to screen
-         this.props.createMessage(message);//send it to database  
+         this.props.createMessage(message, this.props.conversations);//send it to database  
          this.setState({body: ""})
      }
 
     render(){
         const {newMessage, loading, body} = this.state;
         const {auth, friend} = this.props;
+        dayjs.extend(relativeTime);
       
         return(
             <div className="chatbox-container">
@@ -94,7 +93,8 @@ class ChatBox extends React.Component{
                              if(message.from === auth._id){
                                  return (
                                      <div className="comingMessage-container" key={Math.random()}>
-                                             sent : {message.body}
+                                         
+                                        sent: {message.body}
                                              
                                      </div>
                                  )
@@ -145,7 +145,8 @@ const mapStateToProps = state => {
     return {
         loading : state.chat.loading,
         auth: state.data.auth,
-        messages: state.chat.messages
+        messages: state.chat.messages,
+        conversations: state.chat.conversations
     }
 }
 

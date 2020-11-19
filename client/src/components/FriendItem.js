@@ -27,7 +27,7 @@ class FriendItem extends React.Component {
     renderDeletePopup = (name, id) => {
         return(
         <div className="deleteFriend-container">
-            <span className="deleteFriend-title">{name} will no longer be your friend ?</span>
+            <span className="deleteFriend-title">{name} will no longer be your friend and all messages will be deleted?</span>
             <div className="deleteFriend-actions">
                 <button
                 className="cancelDelete-button"

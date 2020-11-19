@@ -17,7 +17,8 @@ class ConversationList extends React.Component {
   }
   
   UNSAFE_componentWillReceiveProps(nextProps){
-    if(nextProps.conversations){
+  
+    if(nextProps.conversations.length > 0){
       this.setState({conversations: nextProps.conversations})
     }
     if(nextProps.loading){
@@ -28,19 +29,17 @@ class ConversationList extends React.Component {
   }
 
   render() {
+      
     return <div className="friendList-container">
            { !this.props.loading ? (
              this.state.conversations.map(conversation => {
               return(
                 <div
                       key={conversation._id}
-                      onClick={() => this.props.selectFriend(conversation.recipients.map(recipient => {
-                        if(recipient._id !== this.props.auth._id){
-                          return recipient;
-                        }
-                      }))}
-                      >
+                      onClick={() => this.props.selectFriend(conversation.recipients_info)}>
+                   
                       <ConversationItem 
+                      
                       conversation={conversation}/>
                     </div>
               ) 
@@ -62,4 +61,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(ConversationList);
+export default connect(mapStateToProps)(ConversationList)

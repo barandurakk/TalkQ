@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import { useSelector } from 'react-redux'
 import _ from "lodash";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
@@ -18,7 +18,7 @@ import CopyIcon from "../svg/copyIcon.svg"
 const UserDetail = () => {
     const auth = useSelector(state=> state.data.auth);
     const loading = useSelector(state => state.data.loading);
-    const [openSnackbar, closeSnackbar] = useSnackbar();
+    const [openSnackbar] = useSnackbar();
   
 
     return (

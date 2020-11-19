@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import _ from "lodash";
 
 //components
@@ -18,14 +18,17 @@ import "../css/pages/panel.css";
 const handleSelectFriend = (friend, setSelectFriend) => {
     if(friend.constructor === Array){
         
-        friend.map(friend => {
+     return   friend.map(friend => {
             if(friend){
-                setSelectFriend(friend);
+                return setSelectFriend(friend);
             }
+            // eslint-disable-next-line
+            else return;
         })
+
     }else{
-        
-        setSelectFriend(friend);
+                
+      return  setSelectFriend(friend);
     }
    
     
@@ -41,6 +44,7 @@ const Panel = () => {
         dispatch(fetchUser());
         dispatch(fetchConversations()); 
         dispatch(fetchFriends());
+        // eslint-disable-next-line
     }, [])
 
 

@@ -1,9 +1,10 @@
 const _ = require("lodash");
 const mongoose = require("mongoose");
 const requireLogin = require("../middlewares/requireLogin");
-const conversation = require("./conversation");
 const FriendRequest = mongoose.model("friendRequest");
-const User = mongoose.model("users")
+const User = mongoose.model("users");
+const Conversations = mongoose.model("conversations");
+const Message = mongoose.model("messages");
 
 module.exports = (app) => {
 
@@ -70,7 +71,22 @@ module.exports = (app) => {
                     {
                         $pull: {friends: userId}
                     }).then(() => {
-                        return res.status(200).send(friendId);
+                        //delete conversation between
+                        Conversations.findOneAndRemove({recipients: {$in: [userId, friendId]}})
+                        .then(()=>{
+                            //delete messages between
+                            Message.deleteMany({$or:[{to: friendId, from:userId}, {to: userId, from:friendId}]})
+                            .then(()=>{
+                                return res.status(200).send(friendId);
+                            }).catch(err => {
+                                console.error(err);
+                                return res.status(500).send();
+                            }) 
+                        }).catch(err => {
+                            console.error(err);
+                            return res.status(500).send();
+                        }) 
+                        
                     }).catch(err => {
                         console.error(err);
                         return res.status(500).send();

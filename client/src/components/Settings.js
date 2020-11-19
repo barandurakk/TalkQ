@@ -64,12 +64,12 @@ class Settings extends React.Component {
     return( 
     <Fragment>
         <div className="settingButton-wrapper">
-            <a 
+            <div 
             className="settings-button"
             onClick={()=> this.handleSettingButton()}    
             >
                 <img src={SettingIcon} alt="Settings Icon" className="settings-icon" />
-            </a>
+            </div>
         </div>
         {this.renderSubmenu()}
         
