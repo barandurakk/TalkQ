@@ -1,4 +1,4 @@
-.friendList-container {
+.convList-container {
   width: 100%;
   height: 100%;
   display: flex;
@@ -7,9 +7,9 @@
   overflow-y: scroll;
 }
 
-.friends-loading-container {
+.conversations-loading-container {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

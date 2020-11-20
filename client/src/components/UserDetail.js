@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import _ from "lodash";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { useSnackbar } from 'react-simple-snackbar'
+import Loader from "react-loader-spinner"
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 //styles
 import "../css/components/userDetail.css"
@@ -55,7 +57,6 @@ const UserDetail = () => {
     const loading = useSelector(state => state.data.loading);
     const [openSnackbar] = useSnackbar();
     const dispatch = useDispatch();
-
     return (
         !loading ? (
             <div className="userDetail-container">
@@ -95,8 +96,19 @@ const UserDetail = () => {
               {showBigAvatar ? (renderBigAvatar(auth.pictureUrl,setShowBigAvatar)):(null)}
         </div>
         ):(
-            <p>Loading</p>
+            <div className="loading-container">
+                <Loader
+                    type="TailSpin"
+                    color="#077b70"
+                    height={100}
+                    width={100}
+                    visible={loading} 
+                />
+                
+            </div>
+            
         )
+        
     )
 }
 

@@ -41,3 +41,16 @@
   background-color: #013f39;
   color: #ffffff;
 }
+
+.noConversation-container {
+  width: 100%;
+  height: 100%;
+  background-color: #2a2f32;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #131c21;
+  font-weight: 900;
+  font-size: 80px;
+}

@@ -30,7 +30,9 @@ export const fetchFriends = () =>  dispatch => {
 
   dispatch({ type: LOADING_DATA });
 axios.get("/api/friends").then(res => {
+  
   dispatch({ type: STOP_LOADING_DATA });
+  
   dispatch({type: FETCH_FRIENDS, payload: res.data});
   
 }).catch(err => {

@@ -69,7 +69,12 @@ const Panel = () => {
             ) 
             :
             (
-                <div>Select a conversation</div>
+                <div className="noConversation-container">
+                    Select <br/>
+                    Conversation<br/>
+                    or<br/>
+                    Friend
+                </div>
             )}
             
         

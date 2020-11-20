@@ -4,12 +4,15 @@ import {socket} from "../config/socket";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {connect} from "react-redux";
+import Loader from "react-loader-spinner"
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 //style
 import "../css/components/chatBox.css"
 
 //icons
 import SettingsIcon from "../svg/SettingIcon.svg"
+import SendIcon from "../svg/sendIcon.svg"
 
 //actions
 import {fetchMessages,createMessage} from "../actions/index";
@@ -65,6 +68,16 @@ class ChatBox extends React.Component{
         this.chatBottom.current.scrollIntoView({ behavior: "smooth" });
     }
 
+    handleKeyPress = (event) => {
+        console.log("key pressed")
+        const {friend, auth} = this.props;
+        const {body} = this.state;
+        
+        if (event.key === 'Enter') {
+            this.handleSendButton(friend, body, auth._id);
+          }
+    }
+
     handleSendButton = async (friend, body, from) => {
         const {auth} = this.props;
          const message = {
@@ -107,7 +120,17 @@ class ChatBox extends React.Component{
                  </div>
              </div>
              <div className="chatbox-messages-container">
-                 {loading ? (<p>Loading</p>): newMessage.length > 0 ? (
+                 {loading ? (
+                    <div className="chatbox-loading-container">
+                        <Loader
+                            type="TailSpin"
+                            color="#077b70"
+                            height={60}
+                            width={60}
+                            visible={this.props.loading} 
+                        />           
+                     </div>   
+                 ): newMessage.length > 0 ? (
 
                      newMessage.map(message => 
                          {
@@ -148,7 +171,10 @@ class ChatBox extends React.Component{
                          })
                  ):
                  (
-                     <p>Send a message to {friend.name}</p>
+                     <div className="noMessage-container">
+                         <span className="noMessage-text">Send a message to <br/>{friend.name}!</span>
+                     </div>
+                     
                  )}
                   <div ref={this.chatBottom} />
              </div>
@@ -165,11 +191,16 @@ class ChatBox extends React.Component{
                  placeholder="Type a message"
                  value={body}
                  name="body"
+                 autocomplete="off"
                  onChange={(e)=> this.setState({body: e.target.value})}
+                 onKeyPress={this.handleKeyPress}
                  />
-                 <button
+                 <div 
+                 className="send-icon-container"
                  onClick={()=> this.handleSendButton(friend, body, auth._id)}
-                 >SEND</button>
+                 >
+                    <img src={SendIcon} alt="sendIcon"/>
+                 </div>
                  </Fragment>
              )}
             

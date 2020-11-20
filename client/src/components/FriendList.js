@@ -1,5 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
+import Loader from "react-loader-spinner"
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 //components
 import FriendItem from "./FriendItem";
@@ -42,7 +44,15 @@ class FriendList extends React.Component {
                         </div>
                 })
               ):(
-                <p>Loading</p>
+                <div className="friends-loading-container">
+                  <Loader
+                      type="TailSpin"
+                      color="#077b70"
+                      height={40}
+                      width={40}
+                      visible={loading} 
+                  />           
+                </div>
               )
             }
              

@@ -1,11 +1,13 @@
 import React from "react";
 import {connect} from "react-redux";
+import Loader from "react-loader-spinner"
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 //components
 import ConversationItem from "./ConversationItem";
 
 //style
-import "../css/components/friendList.css";
+import "../css/components/conversationList.css";
 
 
 
@@ -30,7 +32,7 @@ class ConversationList extends React.Component {
 
   render() {
       const {auth} = this.props;
-    return <div className="friendList-container">
+    return <div className="convList-container">
            { !this.props.loading ? (
              this.state.conversations.map(conversation => {
               return(
@@ -45,7 +47,15 @@ class ConversationList extends React.Component {
               ) 
             })
            ):(
-             <p>Loading</p>
+            <div className="conversations-loading-container">
+              <Loader
+                  type="TailSpin"
+                  color="#077b70"
+                  height={40}
+                  width={40}
+                  visible={this.props.loading} 
+              />           
+            </div>
            )
               
             }  
