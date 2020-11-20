@@ -37,8 +37,6 @@ export default (state = initialState, action) => {
         let conversations = state.conversations;
         let updatedConvList;
         
-        
-
             //find the conversation index has a new message
             // eslint-disable-next-line
           conversations.map((conversation, x) => {

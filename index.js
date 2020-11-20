@@ -107,10 +107,10 @@ io.on("connection", async (socket) => {
     
   });
 
-  socket.on("deleteFriend", async (friendId)=> {
+  socket.on("deleteFriend", async (detail)=> {
 
-    if(connectedUsers[friendId]){
-      connectedUsers[friendId].emit("deleteFriend");
+    if(connectedUsers[detail.friendId]){
+      connectedUsers[detail.friendId].emit("deleteFriend", detail.userId);
     }
     
   });

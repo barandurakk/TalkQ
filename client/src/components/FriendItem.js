@@ -17,7 +17,7 @@ class FriendItem extends React.Component {
     }
 
     handleDeleteButton = (id) => {
-        this.props.deleteFriend(id);
+        this.props.deleteFriend(id, this.props.auth._id);
     }
 
     handleCancelDeleteButton = () => {
@@ -69,4 +69,11 @@ class FriendItem extends React.Component {
   }
 }
 
-export default connect(null, {deleteFriend})(FriendItem);
+const mapStateToProps = state => {
+    return {
+        auth: state.data.auth
+    }
+}
+
+
+export default connect(mapStateToProps, {deleteFriend})(FriendItem);

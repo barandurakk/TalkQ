@@ -38,11 +38,17 @@ axios.get("/api/friends").then(res => {
 
 }
 
-export const deleteFriend = (id) => dispatch => {
-  axios.get(`/api/friends/delete/${id}`).then(res => {
-    dispatch({type: DELETE_FRIEND, payload: id});
-    dispatch({type: DELETE_CONVERSATION, payload: id});
-    socket.emit("deleteFriend", id);
+export const updateFriends = (id) => dispatch => {
+  console.log("updateFriends Action", id);
+  dispatch({type: DELETE_FRIEND, payload: id});
+  dispatch({type: DELETE_CONVERSATION, payload: id});
+}
+
+export const deleteFriend = (friendId, userId) => dispatch => {
+  axios.get(`/api/friends/delete/${friendId}`).then(res => {
+    dispatch({type: DELETE_FRIEND, payload: friendId});
+    dispatch({type: DELETE_CONVERSATION, payload: friendId});
+    socket.emit("deleteFriend", ({friendId, userId}));
   }).catch(err => {
     console.log(err);
   });
@@ -141,7 +147,10 @@ export const fetchMessages = (friendId) => dispatch => {
 
 export const createMessage = (message) => dispatch => {
   socket.emit("sendMessage", message);//send it real-time to friend
-  dispatch(updateConversations(message)); //reload conversations in reducer
+
+  //if message send by us then we have to change from to to, when reducer create conversation, it uses fromId
+  dispatch(updateConversations({...message, from: message.to})); //reload conversations in reducer
+
   axios.post("/api/message/new", message).then(res => {
     dispatch({ type: CREATE_MESSAGE, payload: res.data });    
   }).catch(err=> {

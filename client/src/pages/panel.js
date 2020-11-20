@@ -16,22 +16,8 @@ import "../css/pages/panel.css";
 
 
 const handleSelectFriend = (friend, setSelectFriend) => {
-    if(friend.constructor === Array){
-        
-     return   friend.map(friend => {
-            if(friend){
-                return setSelectFriend(friend);
-            }
-            // eslint-disable-next-line
-            else return;
-        })
-
-    }else{
-                
-      return  setSelectFriend(friend);
-    }
-   
-    
+                console.log("selectedFriend: ",friend );
+        setSelectFriend(friend);
 }
 
 const Panel = () => {

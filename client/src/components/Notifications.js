@@ -9,7 +9,7 @@ import {withSnackbar} from "react-simple-snackbar";
 import RequestItem from "./RequestItem";
 
 //actions
-import {getFriendRequests, fetchFriends, updateConversations, fetchConversations} from "../actions/index";
+import {getFriendRequests, fetchFriends, updateConversations, fetchConversations, updateFriends} from "../actions/index";
 
 //style
 import "../css/components/notifications.css"
@@ -47,8 +47,8 @@ class Notifications extends React.Component {
             }   
         })
 
-        socket.on("deleteFriend", () => {
-            this.props.fetchFriends();
+        socket.on("deleteFriend", (id) => {
+            this.props.updateFriends(id);
         })
 
         socket.on("requestAccepted", (username) => {
@@ -63,7 +63,7 @@ class Notifications extends React.Component {
         socket.on("getMessage", async (message) => {
             console.log("message COME! notification ");
            
-            this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.friendName, friendAvatar: message.friendAvatar });
+            this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.userName, friendAvatar: message.userAvatar });
            
           
         })
@@ -162,4 +162,4 @@ const alertOptions = {
     },
 }
 
-export default connect(mapStateToProps, {getFriendRequests,fetchFriends,updateConversations, fetchConversations})(withSnackbar(Notifications, alertOptions));
+export default connect(mapStateToProps, {getFriendRequests,fetchFriends,updateConversations, fetchConversations, updateFriends})(withSnackbar(Notifications, alertOptions));

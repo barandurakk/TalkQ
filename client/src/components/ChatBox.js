@@ -66,10 +66,13 @@ class ChatBox extends React.Component{
     }
 
     handleSendButton = async (friend, body, from) => {
+        const {auth} = this.props;
          const message = {
              to: friend._id,
              friendName: friend.name, //for reducer
-             friendAvatar: friend.pictureUrl, //for reducer
+             friendAvatar: friend.pictureUrl, //for reducer,
+             userName: auth.name, //for socket
+             userAvatar: auth.pictureUrl,   //for socket
              from,
              body,
              dateSent: new Date().toISOString(),
