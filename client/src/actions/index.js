@@ -159,6 +159,25 @@ export const createMessage = (message) => dispatch => {
 }
 
 
+export const deleteConversation = (friendId,userId) => dispatch => {
+
+  if(!userId){ //coming from socket
+
+    dispatch({ type: DELETE_CONVERSATION, payload: friendId });
+
+  }else{ //coming from item itself
+    dispatch({ type: LOADING_UI });
+  axios.post("/api/conversation/delete", {friendId}).then(res => {
+    dispatch({ type: DELETE_CONVERSATION, payload: friendId });
+    dispatch({ type: STOP_LOADING_UI });
+    socket.emit("deleteConversation", {friendId, userId});
+    //dispatch(fetchConversations());
+  }).catch(err=> {
+    console.log(err);
+  })
+  }
+}
+
 export const updateConversations = (message) => dispatch => {
 
   dispatch({ type: UPDATE_CONVERSATIONS, payload: message });

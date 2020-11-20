@@ -78,9 +78,16 @@ io.on("connection", async (socket) => {
    if(connectedUsers[message.to]){
     connectedUsers[message.to].emit("getMessage", (message));
    }
-    
-   
+  
 });
+
+socket.on("deleteConversation", async (details) => {
+  if(connectedUsers[details.friendId]){
+   connectedUsers[details.friendId].emit("deleteConversation", (details.userId));
+  }
+ 
+});
+
 
   //friendship 
   socket.on("newFriendRequest", async (friendId) => {

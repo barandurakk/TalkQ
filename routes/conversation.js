@@ -164,30 +164,28 @@ module.exports = (app) => {
   });
 
   //delete a conservation
-  app.get("/api/conversation/:conversationId/delete", requireLogin, async (req, res) => {
-    const user = req.user;
-    const convId = req.params.conversationId;
+  app.post("/api/conversation/delete", requireLogin, async (req, res) => {
+    const userId = req.user._id;
+    const friendId = req.body.friendId;
 
-    Conversation.find({ _id: convId })
-      .then((conversation) => {
-        if (_.isEmpty(conversation)) {
-          res.status(404).send({ error: "Böyle bir konuşma bulunamadı!" });
-        } else if (user.id !== conversation[0].owner.toString()) {
-          console.log(conversation[0].owner);
-          console.log(user.id);
-          res.status(401).send({ error: "Bu konuşma sizin değil!" });
-        } else {
-          Conversation.findByIdAndDelete({ _id: convId })
-            .then((result) => {
-              if (result) res.send({ message: "Konuşma başarıyla silindi" });
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        }
-      })
-      .catch((err) => {
-        res.send(404).send({ error: "Konuşmaya ulaşamadık :(" });
-      });
+  Conversation.findOneAndDelete({recipients:{$in:[userId, friendId]}})
+  .then(result => {
+    if(!result){
+      return res.status(404).send({error: "There is no conversation with these details"})
+    }
+      //delete messages
+      Message.deleteMany({$or:[{from: userId, to:friendId},{from:friendId,to:userId}]})
+      .then(()=> {
+        return res.status(200).send({message: "Conversation and messages deleted succesfully"});
+      }).catch(err => {
+        console.error(err);
+        return res.status(500);
+      })  
+  }).catch(err => {
+    console.error(err);
+    return res.status(500);
+  })    
+    
+
   });
 };

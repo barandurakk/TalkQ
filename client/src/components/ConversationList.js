@@ -29,7 +29,7 @@ class ConversationList extends React.Component {
   }
 
   render() {
-      
+      const {auth} = this.props;
     return <div className="friendList-container">
            { !this.props.loading ? (
              this.state.conversations.map(conversation => {
@@ -40,7 +40,7 @@ class ConversationList extends React.Component {
                    
                       <ConversationItem 
                       
-                      conversation={conversation}/>
+                      conversation={conversation} auth={auth._id}/>
                     </div>
               ) 
             })

@@ -9,7 +9,7 @@ import {withSnackbar} from "react-simple-snackbar";
 import RequestItem from "./RequestItem";
 
 //actions
-import {getFriendRequests, fetchFriends, updateConversations, fetchConversations, updateFriends} from "../actions/index";
+import {getFriendRequests, fetchFriends, updateConversations, fetchConversations, updateFriends, deleteConversation} from "../actions/index";
 
 //style
 import "../css/components/notifications.css"
@@ -60,14 +60,15 @@ class Notifications extends React.Component {
             openSnackbar(`${username} declined your friend request!`)
         })
        
-        socket.on("getMessage", async (message) => {
+        socket.on("getMessage", (message) => {
             console.log("message COME! notification ");
            
-            this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.userName, friendAvatar: message.userAvatar });
-           
-          
+            this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.userName, friendAvatar: message.userAvatar }); 
         })
        
+        socket.on("deleteConversation", friendId => {
+            this.props.deleteConversation(friendId);
+        })
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -162,4 +163,4 @@ const alertOptions = {
     },
 }
 
-export default connect(mapStateToProps, {getFriendRequests,fetchFriends,updateConversations, fetchConversations, updateFriends})(withSnackbar(Notifications, alertOptions));
+export default connect(mapStateToProps, {getFriendRequests,fetchFriends,updateConversations, fetchConversations, updateFriends, deleteConversation})(withSnackbar(Notifications, alertOptions));
