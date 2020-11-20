@@ -1,4 +1,4 @@
-import {FETCH_USER, SET_REQUESTS,REJECT_REQUEST,ACCEPT_REQUEST, FETCH_FRIENDS,DELETE_FRIEND,LOADING_DATA,STOP_LOADING_DATA} from "../actions/types";
+import {FETCH_USER, UPDATE_USER_AVATAR, SET_REQUESTS,REJECT_REQUEST,ACCEPT_REQUEST, FETCH_FRIENDS,DELETE_FRIEND,LOADING_DATA,STOP_LOADING_DATA} from "../actions/types";
 
 const initialState = {
   auth: {},
@@ -62,9 +62,16 @@ export default (state = initialState, action) => {
        
        let newFriendList = state.friends.filter(friend => friend.friends_info._id !== deletedFriendId);
        
+        
        return{
           ...state,
           friends: newFriendList
+        }
+
+        case UPDATE_USER_AVATAR:
+        return{
+          ...state,
+          auth: {...state.auth, pictureUrl: action.payload}
         }
 
 

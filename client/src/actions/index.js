@@ -18,7 +18,8 @@ import {
   LOADING_DATA,
   STOP_LOADING_DATA,
   UPDATE_CONVERSATIONS,
-  DELETE_CONVERSATION
+  DELETE_CONVERSATION,
+  UPDATE_USER_AVATAR
 } from "./types";
 
 import {socket} from "../config/socket";
@@ -181,5 +182,20 @@ export const deleteConversation = (friendId,userId) => dispatch => {
 export const updateConversations = (message) => dispatch => {
 
   dispatch({ type: UPDATE_CONVERSATIONS, payload: message });
+
+}
+
+//userAvatar
+export const uploadImage = (formData) => dispatch => {
+
+  dispatch({ type: LOADING_DATA });
+
+  axios.post("/api/avatar/upload", formData).then(res=>{
+    dispatch({ type: STOP_LOADING_DATA });
+    dispatch({type: UPDATE_USER_AVATAR, payload:res.data})
+  }).catch(err=> {
+    console.log(err);
+  })
+
 
 }
