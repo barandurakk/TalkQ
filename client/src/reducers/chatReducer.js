@@ -5,7 +5,8 @@ import {
   CREATE_MESSAGE,
   LOADING_CHAT,
   STOP_LOADING_CHAT,
-  UPDATE_CONVERSATIONS
+  UPDATE_CONVERSATIONS,
+  DELETE_CONVERSATION
   } from "../actions/types";
 
 const initialState = {
@@ -27,6 +28,8 @@ export default (state = initialState, action) => {
     case UPDATE_CONVERSATIONS:
       
         const from = action.payload.from;
+        const friendName= action.payload.friendName;
+        const friendAvatar= action.payload.friendAvatar;
         const to = action.payload.to;
         const body = action.payload.body;
         let indexOfComing;
@@ -34,6 +37,8 @@ export default (state = initialState, action) => {
         let conversations = state.conversations;
         let updatedConvList;
         
+        
+
             //find the conversation index has a new message
             // eslint-disable-next-line
           conversations.map((conversation, x) => {
@@ -43,8 +48,21 @@ export default (state = initialState, action) => {
             indexOfComing = x;
           }
       })
-      
-      //create a conversation list without selected conversation
+
+      //check if there is already a conversation if not create in reducer (for less database connection)
+      if(!selectedConversation){
+
+        updatedConvList= [
+                {
+                  createdAt: new Date().toISOString,
+                  recipients_info: {_id: from, pictureUrl: friendAvatar, name: friendName},
+                  lastMessage: {dateSent: new Date().toISOString, body: body}
+                } 
+                ,...conversations]
+
+      }else{
+
+        //create a conversation list without selected conversation
       conversations.splice(indexOfComing, 1);
     
       //update last message 
@@ -57,7 +75,8 @@ export default (state = initialState, action) => {
      
       //create a new list 
       updatedConvList = [selectedConversation, ...conversations]
-        
+
+      }
    
       return{
         ...state,
@@ -94,6 +113,26 @@ export default (state = initialState, action) => {
           return {
               ...state,
               conversations: [...state.conversations, action.payload]
+          }
+
+      case DELETE_CONVERSATION:
+          let conversationList = state.conversations;
+          let indexOfDeleted;
+
+          conversationList.map((conversation, x) => {
+          
+          if(conversation.recipients_info._id === action.payload){
+            indexOfDeleted = x;
+          }
+        })
+
+        //create a conversation list without selected conversation
+        conversationList.splice(indexOfDeleted, 1);
+        console.log("delete reducer: ", conversationList)
+
+          return {
+              ...state,
+              conversations: conversationList
           }
 
     default:

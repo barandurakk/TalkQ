@@ -15,7 +15,9 @@ const ConversationItem = (props) => {
     },[props.conversation])
 
     return (
+        
         <Fragment>
+
              <div className="conversationItem-container">
                  <div className="conversation-avatar-wrapper">
                  <img src={conversation.recipients_info.pictureUrl} alt="conversation Avatar" className={`conversation-avatar`}/>

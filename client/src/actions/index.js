@@ -17,7 +17,8 @@ import {
   STOP_LOADING_CHAT,
   LOADING_DATA,
   STOP_LOADING_DATA,
-  UPDATE_CONVERSATIONS
+  UPDATE_CONVERSATIONS,
+  DELETE_CONVERSATION
 } from "./types";
 
 import {socket} from "../config/socket";
@@ -40,6 +41,7 @@ axios.get("/api/friends").then(res => {
 export const deleteFriend = (id) => dispatch => {
   axios.get(`/api/friends/delete/${id}`).then(res => {
     dispatch({type: DELETE_FRIEND, payload: id});
+    dispatch({type: DELETE_CONVERSATION, payload: id});
     socket.emit("deleteFriend", id);
   }).catch(err => {
     console.log(err);
@@ -137,15 +139,11 @@ export const fetchMessages = (friendId) => dispatch => {
 
 }
 
-export const createMessage = (message, conversations) => dispatch => {
+export const createMessage = (message) => dispatch => {
+  socket.emit("sendMessage", message);//send it real-time to friend
+  dispatch(updateConversations(message)); //reload conversations in reducer
   axios.post("/api/message/new", message).then(res => {
-    dispatch({ type: CREATE_MESSAGE, payload: res.data });
-    if(conversations.length > 1){
-      dispatch(updateConversations(message)); //reload conversations in reducer
-    }else {
-      dispatch(fetchConversations());
-    }
-    
+    dispatch({ type: CREATE_MESSAGE, payload: res.data });    
   }).catch(err=> {
     console.log(err);
   })

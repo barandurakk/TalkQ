@@ -62,14 +62,9 @@ class Notifications extends React.Component {
        
         socket.on("getMessage", async (message) => {
             console.log("message COME! notification ");
-            
-           // await this.timeout(1000); //waiting conversation's update in database (i know its sloppy)
-           // this.props.fetchConversations(); //reload conversations
-           if(this.props.conversations.length > 1){
-                this.props.updateConversations({from: message.from, body: message.body});
-           }else{
-            this.props.fetchConversations();
-           }
+           
+            this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.friendName, friendAvatar: message.friendAvatar });
+           
           
         })
        

@@ -28,7 +28,11 @@ class ChatBox extends React.Component{
         
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps){
+    timeout = (delay) => {
+        return new Promise( res => setTimeout(res, delay) );
+    }
+
+    async UNSAFE_componentWillReceiveProps(nextProps){
         
         if(nextProps.friend._id !== this.props.friend._id){
             this.props.fetchMessages(nextProps.friend._id);
@@ -36,6 +40,8 @@ class ChatBox extends React.Component{
         if(nextProps.messages !== this.props.messages){
             console.log("messages changed!");
             this.setState({newMessage: nextProps.messages});
+            await this.timeout(300);
+            this.scrollToBottom();
             
         }
         if(nextProps.loading){
@@ -51,8 +57,7 @@ class ChatBox extends React.Component{
             console.log("message COME!");
             if(message.from === this.props.friend._id){
                 this.setState({newMessage: [...this.state.newMessage, message]});         
-            }   
-            this.scrollToBottom();        
+            }         
         })
     }
 
@@ -60,18 +65,20 @@ class ChatBox extends React.Component{
         this.chatBottom.current.scrollIntoView({ behavior: "smooth" });
     }
 
-    handleSendButton = (friend, body, from) => {
+    handleSendButton = async (friend, body, from) => {
          const message = {
              to: friend._id,
+             friendName: friend.name, //for reducer
+             friendAvatar: friend.pictureUrl, //for reducer
              from,
              body,
              dateSent: new Date().toISOString(),
          }
-       
-         socket.emit("sendMessage", message);//send it real-time to friend
+         
          this.setState({newMessage: [...this.state.newMessage, message]}) //show your message to screen
-         this.props.createMessage(message, this.props.conversations);//send it to database  
+         this.props.createMessage(message);//send it to database  
          this.setState({body: ""});
+         await this.timeout(300);
          this.scrollToBottom();
      }
 
