@@ -54,7 +54,7 @@ export default (state = initialState, action) => {
                 {
                   createdAt: new Date().toISOString,
                   recipients_info: {_id: from, pictureUrl: friendAvatar, name: friendName},
-                  lastMessage: {dateSent: new Date().toISOString, body: body}
+                  lastMessage: {dateSent: new Date().toISOString, body: body},
                 } 
                 ,...conversations]
 

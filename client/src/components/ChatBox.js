@@ -70,7 +70,6 @@ class ChatBox extends React.Component{
     }
 
     handleKeyPress = (event) => {
-        console.log("key pressed")
         const {friend, auth} = this.props;
         const {body} = this.state;
         
@@ -81,22 +80,24 @@ class ChatBox extends React.Component{
 
     handleSendButton = async (friend, body, from) => {
         const {auth} = this.props;
-         const message = {
-             to: friend._id,
-             friendName: friend.name, //for reducer
-             friendAvatar: friend.pictureUrl, //for reducer,
-             userName: auth.name, //for socket
-             userAvatar: auth.pictureUrl,   //for socket
-             from,
-             body,
-             dateSent: new Date().toISOString(),
-         }
-         
-         this.setState({newMessage: [...this.state.newMessage, message]}) //show your message to screen
-         this.props.createMessage(message);//send it to database  
-         this.setState({body: ""});
-         await this.timeout(300);
-         this.scrollToBottom();
+        if(body !== "" || body!==null ) {
+            console.log("message sended!");
+            const message = {
+                to: friend._id,
+                friendName: friend.name, //for reducer
+                friendAvatar: friend.pictureUrl, //for reducer,
+                userName: auth.name, //for socket
+                userAvatar: auth.pictureUrl,   //for socket
+                from,
+                body,
+                dateSent: new Date().toISOString(),
+            }        
+            this.setState({newMessage: [...this.state.newMessage, message]}) //show your message to screen
+            this.props.createMessage(message);//send it to database  
+            this.setState({body: ""});
+            await this.timeout(300);
+            this.scrollToBottom();
+        }    
      }
 
     render(){

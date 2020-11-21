@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import _ from "lodash";
 import {socket} from "../config/socket";
 import {withSnackbar} from "react-simple-snackbar";
+import Notification from "react-web-notification";
 
 
 //components
@@ -25,6 +26,8 @@ class Notifications extends React.Component {
         isNotification: false,
         hideSubmenu: true,
         friendRequestList: {},
+        newMessage: "",
+        showMsgNotification: false
     }
 
     //for delay
@@ -62,6 +65,7 @@ class Notifications extends React.Component {
        
         socket.on("getMessage", (message) => {
             console.log("message COME! notification ");
+            this.setState({showMsgNotification: true, newMessage:`${message.friendName}: ${message.body}`});
            
             this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.userName, friendAvatar: message.userAvatar }); 
         })
@@ -89,6 +93,17 @@ class Notifications extends React.Component {
         this.setState({
             hideSubmenu: !this.state.hideSubmenu
         })
+    }
+
+    renderMsgNotification = () => {
+        this.setState({showMsgNotification: false})
+        return(
+            <div className="message-notification-container">
+            <Notification
+                    title={this.state.newMessage}    
+            />
+            </div>
+        )
     }
 
     renderSubmenu = () => {
@@ -135,6 +150,8 @@ class Notifications extends React.Component {
         </span>
     </div>
     {this.renderSubmenu()}
+    {this.state.showMsgNotification ? this.renderMsgNotification() : null}
+    
     
 </Fragment>
   }

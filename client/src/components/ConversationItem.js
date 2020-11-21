@@ -40,15 +40,19 @@ const renderDeletePopup = (name, id, setShowDeletePopup, userId, dispatch) => {
 }
 
 const ConversationItem = (props) => {
-
+    console.log("render");
     const [conversation, setConversation] = useState(props.conversation)
     const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [isNew , setIsNew] = useState(conversation.isNew);
     const dispatch = useDispatch();
     useEffect(() => {
 
-        setConversation(props.conversation)
+        setConversation(props.conversation);
+        setIsNew(false);
 
     },[props.conversation])
+
+
 
     return (
         
@@ -67,6 +71,15 @@ const ConversationItem = (props) => {
                     ReactEmoji.emojify(`${conversation.lastMessage.body}`, {emojiType:"emojione"})
                )}
                </span>
+                 </div>
+                 <div className="conversation-newMessage-container">
+                    {isNew ? 
+                    (
+                        <span>NEW</span>
+                    ):
+                    (
+                        null
+                    )}
                  </div>
                  <div className="conversation-action-wrapper">
                     <span

@@ -40,10 +40,10 @@ const Panel = () => {
             <UserDetail/>
 
             <div className="select-container">
-                <button className="select-buttons"
+                <button className={`select-buttons ${selectedList === 0 ? "active":null}`}
                     onClick={() => setSelectedList(0)}
                 >Conversations</button>
-                <button className="select-buttons"
+                <button className={`select-buttons ${selectedList === 1 ? "active":null}`}
                  onClick={() => setSelectedList(1)}
                 >Friends</button>
             </div>
