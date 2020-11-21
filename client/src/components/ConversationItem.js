@@ -1,5 +1,6 @@
 import React, {Fragment, useEffect, useState} from "react";
 import { useDispatch } from 'react-redux';
+import ReactEmoji from "react-emoji"
 
 //styles
 import "../css/components/conversationItem.css"
@@ -61,9 +62,9 @@ const ConversationItem = (props) => {
          <span className="conversation-name">{conversation.recipients_info.name}</span>
            <span className="conversation-id">
                {conversation.lastMessage.length > 36 ? (
-                   `${conversation.lastMessage.body.substr(0,35)}...`
+                ReactEmoji.emojify(`${conversation.lastMessage.body.substr(0,35)}...`, {emojiType:"emojione"})
                ):(
-                 `${conversation.lastMessage.body}`
+                    ReactEmoji.emojify(`${conversation.lastMessage.body}`, {emojiType:"emojione"})
                )}
                </span>
                  </div>

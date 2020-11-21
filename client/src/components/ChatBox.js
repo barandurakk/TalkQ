@@ -6,6 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import {connect} from "react-redux";
 import Loader from "react-loader-spinner"
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+import ReactEmoji from "react-emoji"
 
 //style
 import "../css/components/chatBox.css"
@@ -141,7 +142,7 @@ class ChatBox extends React.Component{
                                         <div className="sendingMessage-container" key={Math.random()}>    
                                
                                             <div className="text-container">
-                                                <span className="message-text">{message.body}</span>
+                                                <span className="message-text">{ReactEmoji.emojify(message.body, {emojiType:"emojione"})}</span>
                                             </div>
                                             
                                             <div className="message-time-container">
@@ -156,7 +157,7 @@ class ChatBox extends React.Component{
                                     <div className="comingMessage-box">
                                         <div className="comingMessage-container" key={Math.random()}>
                                             <div className="text-container">
-                                                <span className="message-text">{message.body}</span> 
+                                                <span className="message-text">{ReactEmoji.emojify(message.body, {emojiType:"emojione"})}</span> 
                                             </div>
                                             <div className="message-time-container">
                                                 <span className="message-time">{dayjs(message.dateSent).format("HH:mm")}</span> 
