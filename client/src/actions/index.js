@@ -19,7 +19,10 @@ import {
   STOP_LOADING_DATA,
   UPDATE_CONVERSATIONS,
   DELETE_CONVERSATION,
-  UPDATE_USER_AVATAR
+  UPDATE_USER_AVATAR,
+  SAVE_TO_MESSAGE_CACHE,
+  GET_MESSAGE_CACHE,
+  UPDATE_MESSAGE_CACHE
 } from "./types";
 
 import {socket} from "../config/socket";
@@ -137,15 +140,29 @@ export const fetchConversations = () => dispatch => {
 }
 
 export const fetchMessages = (friendId) => dispatch => {
-  dispatch({ type: LOADING_CHAT });
-  axios.post("/api/messages/get", {friendId}).then(res => {
-    dispatch({ type: STOP_LOADING_CHAT });
-    dispatch({type: FETCH_MESSAGES, payload: res.data});
-  }).catch(err => {
-    console.log(err);
-    dispatch({ type: STOP_LOADING_UI });
-  });
+ 
+    dispatch({ type: LOADING_CHAT });
+    axios.post("/api/messages/get", {friendId}).then(res => {
+      dispatch({ type: STOP_LOADING_CHAT });
+      dispatch({type: FETCH_MESSAGES, payload: res.data});
+      dispatch({type: SAVE_TO_MESSAGE_CACHE, payload: {messages: res.data, friendId}});
+    }).catch(err => {
+      console.log(err);
+      dispatch({ type: STOP_LOADING_CHAT });
+    });
 
+}
+
+export const getCachedMessages = (friendId) => dispatch => {
+  
+  dispatch({ type: GET_MESSAGE_CACHE, payload: friendId });
+  
+}
+
+export const updateCachedMessages = (friendId, message) => dispatch => {
+  
+  dispatch({ type: UPDATE_MESSAGE_CACHE, payload: {friendId,message} });
+ 
 }
 
 export const createMessage = (message) => dispatch => {

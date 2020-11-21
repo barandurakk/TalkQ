@@ -40,7 +40,7 @@ const renderDeletePopup = (name, id, setShowDeletePopup, userId, dispatch) => {
 }
 
 const ConversationItem = (props) => {
-    console.log("render");
+  
     const [conversation, setConversation] = useState(props.conversation)
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [isNew , setIsNew] = useState(conversation.isNew);

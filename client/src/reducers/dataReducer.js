@@ -57,7 +57,7 @@ export default (state = initialState, action) => {
         }
 
       case DELETE_FRIEND:
-        console.log("deleteFriendReducer: ", action.payload );
+        
         const deletedFriendId= action.payload;
        
        let newFriendList = state.friends.filter(friend => friend.friends_info._id !== deletedFriendId);

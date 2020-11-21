@@ -16,7 +16,7 @@ import SettingsIcon from "../svg/SettingIcon.svg"
 import SendIcon from "../svg/sendIcon.svg"
 
 //actions
-import {fetchMessages,createMessage} from "../actions/index";
+import {fetchMessages,createMessage,getCachedMessages,updateCachedMessages} from "../actions/index";
 
 class ChatBox extends React.Component{
 
@@ -26,7 +26,8 @@ class ChatBox extends React.Component{
             newMessage:[],
             loading: false,
             body: "",
-            friend:{}
+            friend:{},
+            friends:[]
         }
         this.chatBottom = React.createRef();
         
@@ -36,16 +37,27 @@ class ChatBox extends React.Component{
         return new Promise( res => setTimeout(res, delay) );
     }
 
-    async UNSAFE_componentWillReceiveProps(nextProps){
+    UNSAFE_componentWillReceiveProps(nextProps){
         
         if(nextProps.friend._id !== this.props.friend._id){
-            this.props.fetchMessages(nextProps.friend._id);
+           
+
+            if(!this.state.friends.includes(nextProps.friend._id)){
+                console.log("friend not in state");
+                this.props.fetchMessages(nextProps.friend._id);
+                this.setState({friends: [...this.state.friends, nextProps.friend._id]})
+            }else{              
+               this.props.getCachedMessages(nextProps.friend._id);
+            }
+           
         }
         if(nextProps.messages !== this.props.messages){
-            console.log("messages changed!");
+         
             this.setState({newMessage: nextProps.messages});
-            await this.timeout(300);
-            this.scrollToBottom();
+            
+            this.timeout(200).then(()=>{
+                this.scrollToBottom();
+            }).catch(err=> console.log(err));
             
         }
         if(nextProps.loading){
@@ -56,17 +68,25 @@ class ChatBox extends React.Component{
     }
 
     componentDidMount(){
+        console.log("didmount!");
+        this.setState({friends: [...this.state.friends, this.props.friend._id]})
         this.props.fetchMessages(this.props.friend._id);
         socket.on("getMessage", message => {
-            console.log("message COME!");
+            
             if(message.from === this.props.friend._id){
-                this.setState({newMessage: [...this.state.newMessage, message]});         
-            }         
+                this.setState({newMessage: [...this.state.newMessage, message]});
+                //update cached message
+                this.props.updateCachedMessages(message.from, message);
+
+            } else{
+                //update cached messages
+                this.props.updateCachedMessages(message.from, message);
+            }        
         })
     }
 
     scrollToBottom = () => {
-        this.chatBottom.current.scrollIntoView({ behavior: "smooth" });
+        this.chatBottom.current.scrollIntoView({ behavior: "auto" });
     }
 
     handleKeyPress = (event) => {
@@ -81,7 +101,7 @@ class ChatBox extends React.Component{
     handleSendButton = async (friend, body, from) => {
         const {auth} = this.props;
         if(body !== "" || body!==null ) {
-            console.log("message sended!");
+            
             const message = {
                 to: friend._id,
                 friendName: friend.name, //for reducer
@@ -95,7 +115,7 @@ class ChatBox extends React.Component{
             this.setState({newMessage: [...this.state.newMessage, message]}) //show your message to screen
             this.props.createMessage(message);//send it to database  
             this.setState({body: ""});
-            await this.timeout(300);
+            await this.timeout(200);
             this.scrollToBottom();
         }    
      }
@@ -122,6 +142,7 @@ class ChatBox extends React.Component{
                  </div>
              </div>
              <div className="chatbox-messages-container">
+                  
                  {loading ? (
                     <div className="chatbox-loading-container">
                         <Loader
@@ -193,7 +214,7 @@ class ChatBox extends React.Component{
                  placeholder="Type a message"
                  value={body}
                  name="body"
-                 autocomplete="off"
+                 autoComplete="off"
                  onChange={(e)=> this.setState({body: e.target.value})}
                  onKeyPress={this.handleKeyPress}
                  />
@@ -218,9 +239,10 @@ const mapStateToProps = state => {
         loading : state.chat.loading,
         auth: state.data.auth,
         messages: state.chat.messages,
-        conversations: state.chat.conversations
+        conversations: state.chat.conversations,
+        messageCache: state.chat.messageCache
     }
 }
 
 
-export default connect(mapStateToProps, {fetchMessages, createMessage})(ChatBox);
+export default connect(mapStateToProps, {fetchMessages, createMessage, getCachedMessages,updateCachedMessages})(ChatBox);

@@ -16,7 +16,7 @@ import "../css/pages/panel.css";
 
 
 const handleSelectFriend = (friend, setSelectFriend) => {
-                console.log("selectedFriend: ",friend );
+               
         setSelectFriend(friend);
 }
 

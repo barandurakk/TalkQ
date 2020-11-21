@@ -64,7 +64,7 @@ class Notifications extends React.Component {
         })
        
         socket.on("getMessage", (message) => {
-            console.log("message COME! notification ");
+           
             this.setState({showMsgNotification: true, newMessage:`${message.friendName}: ${message.body}`});
            
             this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.userName, friendAvatar: message.userAvatar }); 

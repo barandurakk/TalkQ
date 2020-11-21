@@ -6,12 +6,16 @@ import {
   LOADING_CHAT,
   STOP_LOADING_CHAT,
   UPDATE_CONVERSATIONS,
-  DELETE_CONVERSATION
+  DELETE_CONVERSATION,
+  SAVE_TO_MESSAGE_CACHE,
+  GET_MESSAGE_CACHE,
+  UPDATE_MESSAGE_CACHE
   } from "../actions/types";
 
 const initialState = {
   conversations: [],
   messages: [],
+  messageCache: [],
   loading: false
 };
 
@@ -24,6 +28,7 @@ export default (state = initialState, action) => {
           ...state,
           conversations: action.payload
       }
+
 
     case UPDATE_CONVERSATIONS:
       
@@ -44,7 +49,9 @@ export default (state = initialState, action) => {
           if(conversation.recipients_info._id === from || conversation.recipients_info._id === to){
             selectedConversation = conversation;
             indexOfComing = x;
+            return true;
           }
+          return false;
       })
 
       //check if there is already a conversation if not create in reducer (for less database connection)
@@ -83,12 +90,45 @@ export default (state = initialState, action) => {
 
       case FETCH_MESSAGES:
         const message=action.payload;
+
       return {
           ...state,
           messages: message
       }
 
-      case  CREATE_MESSAGE:
+      case SAVE_TO_MESSAGE_CACHE:
+
+        return {
+          ...state,
+          messageCache: [...state.messageCache, 
+                          {friendId: action.payload.friendId, messages: action.payload.messages} ]
+        }
+
+      case UPDATE_MESSAGE_CACHE:
+        const cacheList = state.messageCache;
+
+        cacheList.map(obj => {
+          if(obj.friendId === action.payload.friendId){
+            obj.messages.push(action.payload.message)
+            return true;
+          }
+          return false;
+        })
+
+      return{
+        ...state,
+        messageCache: cacheList
+      }
+
+      case GET_MESSAGE_CACHE:
+        const friendId = action.payload;
+        let askedMessages = state.messageCache.filter(cacheItem => cacheItem.friendId === friendId);
+        return{
+          ...state,
+          messages: askedMessages[0].messages
+        }
+
+      case CREATE_MESSAGE:
           //add message maybe?
           
           return {
@@ -121,12 +161,14 @@ export default (state = initialState, action) => {
           
           if(conversation.recipients_info._id === action.payload){
             indexOfDeleted = x;
+           return true;
           }
+          return false;
         })
 
         //create a conversation list without selected conversation
         conversationList.splice(indexOfDeleted, 1);
-        console.log("delete reducer: ", conversationList)
+        
 
           return {
               ...state,

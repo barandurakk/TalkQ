@@ -17,11 +17,12 @@ module.exports = (app) => {
 
     const friendId = req.body.friendId;
     const userId= req.user._id;
-    
-
-    Message.find({$or:[{to: friendId, from:userId}, {to: userId, from:friendId}]}).sort({dateSent: "asc"})
+   
+    Message.find({$or:[{to: friendId, from:userId}, {to: userId, from:friendId}]})
+    .sort({dateSent: "asc"})
+    .limit(2000) //for budget 
     .then(result => {
-    
+      
       if(!result){
         return res.status(404).send();
       }else{
