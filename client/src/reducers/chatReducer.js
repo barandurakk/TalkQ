@@ -9,7 +9,8 @@ import {
   DELETE_CONVERSATION,
   SAVE_TO_MESSAGE_CACHE,
   GET_MESSAGE_CACHE,
-  UPDATE_MESSAGE_CACHE
+  UPDATE_MESSAGE_CACHE,
+  DELETE_MESSAGE_CACHE
   } from "../actions/types";
 
 const initialState = {
@@ -105,7 +106,7 @@ export default (state = initialState, action) => {
         }
 
       case UPDATE_MESSAGE_CACHE:
-        const cacheList = state.messageCache;
+        let cacheList = state.messageCache;
 
         cacheList.map(obj => {
           if(obj.friendId === action.payload.friendId){
@@ -120,12 +121,23 @@ export default (state = initialState, action) => {
         messageCache: cacheList
       }
 
+      case DELETE_MESSAGE_CACHE:
+
+      let cacheList1 = state.messageCache;
+
+      let deletedCacheList = cacheList1.filter(obj => obj.friendId !== action.payload);
+      console.log("deletecachereducer: ",deletedCacheList );
+        return {
+          ...state,
+          messageCache: deletedCacheList
+        }
+
       case GET_MESSAGE_CACHE:
         const friendId = action.payload;
         let askedMessages = state.messageCache.filter(cacheItem => cacheItem.friendId === friendId);
         return{
           ...state,
-          messages: askedMessages[0].messages
+          messages: askedMessages[0] ? (askedMessages[0].messages):([])
         }
 
       case CREATE_MESSAGE:

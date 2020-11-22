@@ -1,3 +1,31 @@
+/*DESKTOP CSS*/
+@media only screen and (min-width: 601px) {
+  .notification-submenu-container {
+    position: fixed;
+    text-align: center;
+    padding: 5px 10px 0px 10px;
+    top: 50px;
+    border-radius: 5px;
+    background-color: rgba(42, 47, 50);
+    box-shadow: -3px 3px 5px #000000;
+  }
+}
+
+/*MOBILE*/
+@media only screen and (max-width: 600px) {
+  .notification-submenu-container {
+    position: fixed;
+    text-align: center;
+    padding: 5px 10px 0px 10px;
+    top: 60px;
+    right: 0;
+    left: 0;
+    border-radius: 5px;
+    background-color: rgba(42, 47, 50);
+    box-shadow: -3px 3px 5px #000000;
+  }
+}
+
 .notification-icon {
   width: 20px;
 }
@@ -40,16 +68,6 @@
   max-width: 200px;
   padding: 5px;
   background-color: #131c21;
-}
-
-.notification-submenu-container {
-  position: fixed;
-  text-align: center;
-  padding: 5px 10px 0px 10px;
-  top: 50px;
-  border-radius: 5px;
-  background-color: rgba(42, 47, 50);
-  box-shadow: -3px 3px 5px #000000;
 }
 
 .notification-list {

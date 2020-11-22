@@ -1,62 +1,153 @@
-.main-container {
-  display: flex;
-  flex-direction: row;
+/*DESKTOP CSS*/
+@media only screen and (min-width: 601px) {
+  .main-container {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .left-container {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    min-width: 320px;
+    max-width: 400px;
+    background-color: #131c21;
+    height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .right-container {
+    min-width: 450px;
+    width: 100%;
+  }
+
+  .select-container {
+    width: 100%;
+    height: 40px;
+    background-color: #077b70;
+    margin-bottom: 5px;
+  }
+
+  .select-buttons {
+    background-color: #077b70;
+    border: none;
+    cursor: pointer;
+    width: 50%;
+    height: 40px;
+    color: #013f39;
+    font-size: 16px;
+    font-weight: 600;
+    outline: none;
+  }
+
+  .select-buttons:hover {
+    background-color: #013f39;
+    color: #ffffff;
+  }
+
+  .active {
+    background-color: #013f39;
+    color: #ffffff;
+  }
+
+  .noConversation-container {
+    width: 100%;
+    height: 100%;
+    background-color: #2a2f32;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #131c21;
+    font-weight: 900;
+    font-size: 80px;
+  }
 }
 
-.left-container {
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-  min-width: 320px;
-  max-width: 400px;
-  background-color: #131c21;
-  height: 100vh;
-  overflow-x: hidden;
-}
+/*MOBILE*/
+@media only screen and (max-width: 600px) {
+  .main-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: hidden;
+  }
 
-.right-container {
-  min-width: 450px;
-  width: 100%;
-}
+  .left-container {
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    background-color: #131c21;
+    height: 100%;
+    overflow-x: hidden;
+  }
 
-.select-container {
-  width: 100%;
-  height: 40px;
-  background-color: #077b70;
-  margin-bottom: 5px;
-}
+  .showDrawer {
+    transform: none;
+  }
 
-.select-buttons {
-  background-color: #077b70;
-  border: none;
-  cursor: pointer;
-  width: 50%;
-  height: 40px;
-  color: #013f39;
-  font-size: 16px;
-  font-weight: 600;
-  outline: none;
-}
+  .openDrawer-button {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    padding: 15px 8px;
+    background-color: #077b70;
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    border-radius: 0px 5px 5px 0px;
+  }
 
-.select-buttons:hover {
-  background-color: #013f39;
-  color: #ffffff;
-}
+  .right-container {
+    width: 100%;
+  }
 
-.active {
-  background-color: #013f39;
-  color: #ffffff;
-}
+  .select-container {
+    width: 100%;
+    height: 40px;
+    background-color: #077b70;
+    margin-bottom: 5px;
+  }
 
-.noConversation-container {
-  width: 100%;
-  height: 100%;
-  background-color: #2a2f32;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: #131c21;
-  font-weight: 900;
-  font-size: 80px;
+  .select-buttons {
+    background-color: #077b70;
+    border: none;
+    cursor: pointer;
+    width: 50%;
+    height: 40px;
+    color: #013f39;
+    font-size: 16px;
+    font-weight: 600;
+    outline: none;
+  }
+
+  .select-buttons:hover {
+    background-color: #013f39;
+    color: #ffffff;
+  }
+
+  .active {
+    background-color: #013f39;
+    color: #ffffff;
+  }
+
+  .noConversation-container {
+    width: 100%;
+    height: 100%;
+    background-color: #2a2f32;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #131c21;
+    font-weight: 900;
+    font-size: 80px;
+  }
 }

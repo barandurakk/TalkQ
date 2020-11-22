@@ -1,28 +1,84 @@
-.addFriend-container {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  margin: auto;
-  padding: 0px 50px 25px 50px;
-  left: 0;
-  right: 0;
-  width: 30%;
-  min-width: 500px;
-  background-color: rgba(42, 47, 50);
-  box-shadow: -4px 4px 10px #000000;
-  border-radius: 15px;
+/*DESKTOP CSS*/
+@media only screen and (min-width: 601px) {
+  .addFriend-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    margin: auto;
+    padding: 0px 50px 25px 50px;
+    left: 0;
+    right: 0;
+    width: 30%;
+    min-width: 500px;
+    background-color: rgba(42, 47, 50);
+    box-shadow: -4px 4px 10px #000000;
+    border-radius: 15px;
+  }
+  .addFriend-title {
+    width: 100%;
+    color: #ffffff;
+    text-align: center;
+  }
+  .addFriend-form-actions {
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+    justify-content: flex-end;
+  }
+  .addFriend-buttons {
+    padding: 12px 17px 12px 17px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+  }
+}
+
+/*MOBILE*/
+@media only screen and (max-width: 600px) {
+  .addFriend-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    margin: auto;
+    padding: 0px 10px 10px 10px;
+    top: 60px;
+    left: 0;
+    right: 0;
+    width: 90%;
+    background-color: rgba(42, 47, 50);
+    box-shadow: -4px 4px 10px #000000;
+    border-radius: 15px;
+  }
+  .addFriend-title {
+    width: 100%;
+    color: #ffffff;
+    text-align: center;
+  }
+  .addFriend-form-actions {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    justify-content: space-between;
+  }
+  .addFriend-buttons {
+    padding: 12px 17px 12px 17px;
+    margin: 0px 20px 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+  }
 }
 
 .addFriend-form {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-.addFriend-title {
-  width: 100%;
-  color: #ffffff;
-  text-align: center;
 }
 
 .addFriend-form-input {
@@ -35,24 +91,6 @@
   color: #ffffff;
   font-weight: 600;
   margin-bottom: 5px;
-}
-
-.addFriend-form-actions {
-  display: flex;
-  flex-direction: row;
-  margin-top: 30px;
-  justify-content: flex-end;
-}
-
-.addFriend-buttons {
-  padding: 12px 17px 12px 17px;
-  margin-bottom: 10px;
-  margin-left: 20px;
-  border-radius: 5px;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
 }
 
 .sendButton {

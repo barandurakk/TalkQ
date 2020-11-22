@@ -22,7 +22,8 @@ import {
   UPDATE_USER_AVATAR,
   SAVE_TO_MESSAGE_CACHE,
   GET_MESSAGE_CACHE,
-  UPDATE_MESSAGE_CACHE
+  UPDATE_MESSAGE_CACHE,
+   DELETE_MESSAGE_CACHE
 } from "./types";
 
 import {socket} from "../config/socket";
@@ -51,13 +52,27 @@ export const updateFriends = (id) => dispatch => {
 }
 
 export const deleteFriend = (friendId, userId) => dispatch => {
-  axios.get(`/api/friends/delete/${friendId}`).then(res => {
+
+  if(!userId){ //coming from socket (for not delete twice in database)
+
+    dispatch({ type: DELETE_MESSAGE_CACHE, payload: friendId });
     dispatch({type: DELETE_FRIEND, payload: friendId});
     dispatch({type: DELETE_CONVERSATION, payload: friendId});
-    socket.emit("deleteFriend", ({friendId, userId}));
-  }).catch(err => {
-    console.log(err);
-  });
+
+  }else{ //coming from item itself
+
+      dispatch({ type: LOADING_UI });
+      axios.get(`/api/friends/delete/${friendId}`).then(res => {
+      dispatch({ type: DELETE_MESSAGE_CACHE, payload: friendId });
+      dispatch({type: DELETE_FRIEND, payload: friendId});
+      dispatch({type: DELETE_CONVERSATION, payload: friendId});
+      dispatch({ type: STOP_LOADING_UI });
+      socket.emit("deleteFriend", ({friendId, userId}));
+    }).catch(err => {
+      console.log(err);
+    });
+
+  }
 }
 
 //USER ACTIONS
@@ -167,11 +182,11 @@ export const updateCachedMessages = (friendId, message) => dispatch => {
 
 export const createMessage = (message) => dispatch => {
   socket.emit("sendMessage", message);//send it real-time to friend
-
+  dispatch(updateCachedMessages( message.to, message));
   //if message send by us then we have to change from to to, when reducer create conversation, it uses fromId
   dispatch(updateConversations({...message, from: message.to})); //reload conversations in reducer
-
   axios.post("/api/message/new", message).then(res => {
+    
     dispatch({ type: CREATE_MESSAGE, payload: res.data });    
   }).catch(err=> {
     console.log(err);
@@ -181,17 +196,18 @@ export const createMessage = (message) => dispatch => {
 
 export const deleteConversation = (friendId,userId) => dispatch => {
 
-  if(!userId){ //coming from socket
+  if(!userId){ //coming from socket (for not delete twice in database)
 
     dispatch({ type: DELETE_CONVERSATION, payload: friendId });
+    dispatch({ type: DELETE_MESSAGE_CACHE, payload: friendId });
 
   }else{ //coming from item itself
     dispatch({ type: LOADING_UI });
-  axios.post("/api/conversation/delete", {friendId}).then(res => {
+    axios.post("/api/conversation/delete", {friendId}).then(res => {
+    dispatch({ type: DELETE_MESSAGE_CACHE, payload: friendId });
     dispatch({ type: DELETE_CONVERSATION, payload: friendId });
     dispatch({ type: STOP_LOADING_UI });
-    socket.emit("deleteConversation", {friendId, userId});
-    //dispatch(fetchConversations());
+    socket.emit("deleteConversation", {friendId, userId});  
   }).catch(err=> {
     console.log(err);
   })

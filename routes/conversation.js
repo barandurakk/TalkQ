@@ -169,7 +169,7 @@ module.exports = (app) => {
     const userId = req.user._id;
     const friendId = req.body.friendId;
 
-  Conversation.findOneAndDelete({recipients:{$in:[userId, friendId]}})
+  Conversation.findOneAndDelete({$and:[{recipients: friendId},{recipients: userId}]})
   .then(result => {
     if(!result){
       return res.status(404).send({error: "There is no conversation with these details"})

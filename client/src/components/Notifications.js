@@ -98,6 +98,7 @@ class Notifications extends React.Component {
     renderMsgNotification = () => {
         this.setState({showMsgNotification: false})
         return(
+            //browser notification component
             <div className="message-notification-container">
             <Notification
                     title={this.state.newMessage}    
@@ -168,7 +169,7 @@ const mapStateToProps = state => {
 }
 
 const alertOptions = {
-    position: 'bottom-right',
+    position: 'top-right',
     style: {
       borderLeft: '10px solid #077b70',
       fontSize: '16px',

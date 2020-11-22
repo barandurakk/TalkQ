@@ -1,3 +1,29 @@
+/*DESKTOP CSS*/
+@media only screen and (min-width: 601px) {
+  .settings-submenu-container {
+    display: flex;
+    position: fixed;
+    top: 50px;
+    border-radius: 5px;
+    background-color: rgba(42, 47, 50);
+    box-shadow: -3px 3px 5px #000000;
+  }
+}
+
+/*MOBILE*/
+@media only screen and (max-width: 600px) {
+  .settings-submenu-container {
+    display: flex;
+    position: fixed;
+    top: 60px;
+    right: 0;
+    left: 0;
+    border-radius: 5px;
+    background-color: rgba(42, 47, 50);
+    box-shadow: -3px 3px 5px #000000;
+  }
+}
+
 .settings-icon {
   width: 20px;
 }
@@ -17,15 +43,6 @@
 .settingButton-wrapper:hover {
   background-color: rgba(256, 256, 256, 0.1);
   border-radius: 50%;
-}
-
-.settings-submenu-container {
-  display: flex;
-  position: fixed;
-  top: 50px;
-  border-radius: 5px;
-  background-color: rgba(42, 47, 50);
-  box-shadow: -3px 3px 5px #000000;
 }
 
 .settings-list {

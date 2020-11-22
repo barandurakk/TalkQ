@@ -80,6 +80,7 @@ class AddFriend extends React.Component {
                         <label  className="addFriend-form-label">Friend ID: </label>
                         <input type="text" 
                         name="friendId" 
+                        autoComplete="off"
                         value={this.state.friendId} 
                         placeholder="Ex: 5f6cbdf295550568a81c926d" 
                         className="addFriend-form-input" 

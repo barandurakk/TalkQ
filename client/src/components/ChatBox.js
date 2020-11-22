@@ -39,26 +39,20 @@ class ChatBox extends React.Component{
 
     UNSAFE_componentWillReceiveProps(nextProps){
         
-        if(nextProps.friend._id !== this.props.friend._id){
-           
-
+        if(nextProps.friend._id !== this.props.friend._id){   
             if(!this.state.friends.includes(nextProps.friend._id)){
-                console.log("friend not in state");
+               
                 this.props.fetchMessages(nextProps.friend._id);
                 this.setState({friends: [...this.state.friends, nextProps.friend._id]})
             }else{              
                this.props.getCachedMessages(nextProps.friend._id);
-            }
-           
+            }  
         }
         if(nextProps.messages !== this.props.messages){
-         
-            this.setState({newMessage: nextProps.messages});
-            
+            this.setState({newMessage: nextProps.messages});    
             this.timeout(200).then(()=>{
                 this.scrollToBottom();
-            }).catch(err=> console.log(err));
-            
+            }).catch(err=> console.log(err));  
         }
         if(nextProps.loading){
             this.setState({loading: true})
@@ -68,7 +62,7 @@ class ChatBox extends React.Component{
     }
 
     componentDidMount(){
-        console.log("didmount!");
+        
         this.setState({friends: [...this.state.friends, this.props.friend._id]})
         this.props.fetchMessages(this.props.friend._id);
         socket.on("getMessage", message => {
@@ -160,8 +154,8 @@ class ChatBox extends React.Component{
                            
                              if(message.from === auth._id){
                                  return (
-                                        <div className="sendingMessage-box">
-                                        <div className="sendingMessage-container" key={Math.random()}>    
+                                        <div className="sendingMessage-box" key={message._id ? message._id : Math.random()}>
+                                        <div className="sendingMessage-container" >    
                                
                                             <div className="text-container">
                                                 <span className="message-text">{ReactEmoji.emojify(message.body, {emojiType:"emojione"})}</span>
@@ -176,8 +170,8 @@ class ChatBox extends React.Component{
                                  )
                              }else {
                                  return(
-                                    <div className="comingMessage-box">
-                                        <div className="comingMessage-container" key={Math.random()}>
+                                    <div className="comingMessage-box" key={message._id ? message._id : Math.random()}>
+                                        <div className="comingMessage-container" >
                                             <div className="text-container">
                                                 <span className="message-text">{ReactEmoji.emojify(message.body, {emojiType:"emojione"})}</span> 
                                             </div>
