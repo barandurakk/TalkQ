@@ -94,7 +94,7 @@ class ChatBox extends React.Component{
 
     handleSendButton = async (friend, body, from) => {
         const {auth} = this.props;
-        if(body !== "" || body!==null ) {
+        if(body !== "" && body!==null ) {
             
             const message = {
                 to: friend._id,

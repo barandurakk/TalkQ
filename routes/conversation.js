@@ -1,10 +1,7 @@
-const passport = require("passport");
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const requireLogin = require("../middlewares/requireLogin");
-const dayjs = require("dayjs");
 
-const User = mongoose.model("users");
 const Conversation = mongoose.model("conversations");
 const Message = mongoose.model("messages");
 

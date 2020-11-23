@@ -2,7 +2,8 @@ const passport = require("passport");
 const cloudinary = require("cloudinary");
 const mongoose = require("mongoose");
 const requireLogin = require("../middlewares/requireLogin");
-const User = mongoose.model("users")
+const User = mongoose.model("users");
+const keys = require("../util/keys");
 
 module.exports = (app, upload) => {
   app.get(
@@ -13,7 +14,7 @@ module.exports = (app, upload) => {
   );
 
   app.get("/auth/google/callback", passport.authenticate("google"), (req, res) => {
-    res.redirect("http://localhost:3000/panel");
+    res.redirect(`${keys.client_url}/panel`);
   });
 
   app.get("/api/logout", (req, res) => {

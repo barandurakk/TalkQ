@@ -242,7 +242,7 @@ module.exports = (app) => {
         const userId = req.user._id;
 
         try {
-            //look for request and change status to rejected and delete
+            //look for request and delete request
             const friendRequest = await FriendRequest.findOneAndDelete({_id: requestId, recipient: userId, status:1 });
            
             if(_.isEmpty(friendRequest)){
