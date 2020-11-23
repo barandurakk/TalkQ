@@ -9,6 +9,9 @@ const cors = require("cors");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 
+//for monitoring
+require('newrelic');
+
 //models
 require("./models/User");
 require("./models/Conversation");
