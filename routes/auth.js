@@ -13,7 +13,8 @@ module.exports = (app, upload) => {
     })
   );
 
-  app.get("/auth/google/callback", passport.authenticate("google"), (req, res) => {
+  app.get("/auth/google/callback", passport.authenticate("google"),(req, res) => {
+
     res.redirect(`${keys.client_url}/panel`);
   });
 
@@ -23,8 +24,10 @@ module.exports = (app, upload) => {
   });
 
   app.get("/api/currentUser", (req, res) => {
-    res.send(req.user);
+
+   res.send(req.user);
   });
+
 
   //upload avatar
   app.post("/api/avatar/upload", requireLogin, upload.single("file"), (req,res) => {
