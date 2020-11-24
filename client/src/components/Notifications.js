@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import _ from "lodash";
 import {socket} from "../config/socket";
 import {withSnackbar} from "react-simple-snackbar";
+import Push from "push.js";
 
 
 //components
@@ -62,6 +63,16 @@ class Notifications extends React.Component {
        
         socket.on("getMessage", (message) => {
            
+            Push.create(`${message.userName}: `,{
+                body: message.body.length > 35 ? (`${message.body.substr(0,35)}...`):(message.body),
+                icon: "../img/logo.png",
+                requireInteraction: true,
+                timeout:4000,
+                onClick: () => {
+                    window.focus();
+                    this.close();
+                }
+            });
             this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.userName, friendAvatar: message.userAvatar }); 
         })
        
@@ -157,6 +168,7 @@ const alertOptions = {
       fontSize: '16px',
       fontWeight: 600,
       textAlign: 'left',
+      zIndex: 99
     },
     closeStyle: {
       fontSize: '16px',

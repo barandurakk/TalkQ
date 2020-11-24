@@ -282,7 +282,7 @@
     max-width: 80%;
     border-radius: 15px;
     background-color: #373f44;
-    margin: 15px 30px 15px 30px;
+    margin: 15px 15px 15px 30px;
   }
 
   .sendingMessage-box {
@@ -296,7 +296,7 @@
     max-width: 80%;
     border-radius: 15px;
     background-color: #077b70;
-    margin: 15px 30px 15px 30px;
+    margin: 15px 10px 15px 30px;
   }
 
   .text-container {
