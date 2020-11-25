@@ -8,6 +8,7 @@ const socketIo = require("socket.io");
 const cors = require("cors");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
+const secure = require('ssl-express-www');
 
 
 //for monitoring
@@ -30,7 +31,7 @@ app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 /* -- */
 
 //middlewares
-
+app.use(secure); //redirect https
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
@@ -91,15 +92,7 @@ if (process.env.NODE_ENV === "production") {
   const path = require("path");
   //Express main.js ve main.css gibi dosyalara ulaşıp cevap verebilsin diye.
   app.use(express.static(path.join(__dirname, "/client/build")));
-  app.use (function (req, res, next) {
-    if (req.secure) {
-            // request was via https, so do no special handling
-            next();
-    } else {
-            // request was via http, so redirect to https
-            res.redirect('https://' + req.headers.host + req.url);
-    }
-});
+  
 
   //Express gelen route'u tanımazsa index.html sayfasını cevap olarak göndersin diye.
 

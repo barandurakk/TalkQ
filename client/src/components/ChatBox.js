@@ -65,12 +65,15 @@ class ChatBox extends React.Component{
         
         this.setState({friends: [...this.state.friends, this.props.friend._id]})
         this.props.fetchMessages(this.props.friend._id);
-        socket.on("getMessage", message => {
+        socket.on("getMessage", async message => {
             
             if(message.from === this.props.friend._id){
                 this.setState({newMessage: [...this.state.newMessage, message]});
                 //update cached message
                 this.props.updateCachedMessages(message.from, message);
+                //scroll bottom
+                await this.timeout(200);
+                this.scrollToBottom();
 
             } else{
                 //update cached messages
