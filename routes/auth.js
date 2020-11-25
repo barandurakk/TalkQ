@@ -32,7 +32,20 @@ module.exports = (app, upload) => {
   //upload avatar
   app.post("/api/avatar/upload", requireLogin, upload.single("file"), (req,res) => {
 
-    cloudinary.v2.uploader.upload(req.file.path, (err,result)=> {
+    //delete old cloudinary picture
+    if(req.user.pictureUrl.split(".").includes("cloudinary")){
+
+      const fileArray = req.user.pictureUrl.split("/");
+      const fileName = fileArray[fileArray.length-1].split(".")[0];
+      cloudinary.uploader.destroy(fileName, (result) => {
+        if(result){
+         console.log(`${req.user.name}'s old avatar deleted successfully`);
+        }
+      })    
+    
+    }
+
+    cloudinary.v2.uploader.upload(req.file.path,  {gravity: "center", height: 500, quality: "auto:eco", width: 500, crop: "lpad"},  (err,result)=> {
      if(err){
          req.send(err.message);
      }
@@ -43,7 +56,7 @@ module.exports = (app, upload) => {
        if(!user){
          return res.status(403);
        }
-       return res.send(result.url);
+       return res.send(result.secure_url);
      }).catch(err => {
        console.error(err);
        return res.status(500);
