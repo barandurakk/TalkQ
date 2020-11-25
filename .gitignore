@@ -2,3 +2,5 @@
 /node_modules
 /client/node_modules
 /client/build
+/newrelic.js
+/newrelic_agent.log
