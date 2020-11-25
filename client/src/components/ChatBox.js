@@ -80,7 +80,7 @@ class ChatBox extends React.Component{
     }
 
     scrollToBottom = () => {
-        this.chatBottom.current.scrollIntoView({ behavior: "auto" });
+        this.chatBottom.current.scrollIntoView(true);
     }
 
     handleKeyPress = (event) => {

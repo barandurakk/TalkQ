@@ -4,7 +4,8 @@ import _ from "lodash";
 import {socket} from "../config/socket";
 import {withSnackbar} from "react-simple-snackbar";
 import Push from "push.js";
-
+import {Howl, Howler} from 'howler';
+import ifvisible from "ifvisible.js";
 
 //components
 import RequestItem from "./RequestItem";
@@ -27,6 +28,12 @@ class Notifications extends React.Component {
         hideSubmenu: true,
         friendRequestList: {},
     }
+
+    //notification sound
+    sound = new Howl({
+        src: ['/notification.mp3'],
+        html5: true,
+      });
 
     //for delay
     timeout = (delay) => {
@@ -62,14 +69,27 @@ class Notifications extends React.Component {
         })
        
         socket.on("getMessage", (message) => {
-           
-            Push.create(`${message.userName}: `,{
-                body: message.body.length > 35 ? (`${message.body.substr(0,35)}...`):(message.body),
-                icon: "../img/logo.png",
-                timeout:5000,
-                serviceWorker: '../swDev.js'
-                
-            });
+
+            //if app not visible send notification and notification sound
+            if( !ifvisible.now() ){
+               
+                Push.create(`${message.userName}: `,{
+                    body: message.body.length > 35 ? (`${message.body.substr(0,35)}...`):(message.body),
+                    icon: "/logo.png",
+                    link: "/",
+                    timeout:8000,
+                    serviceWorker: '/sw.js',            
+                    silent: true,
+                    onClick: function () {
+                        window.focus();
+                        this.close();
+                    },
+                    
+                });
+                   
+                  this.sound.play();
+            }
+        
             this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.userName, friendAvatar: message.userAvatar }); 
         })
        
@@ -171,5 +191,7 @@ const alertOptions = {
       fontSize: '16px',
     },
 }
+
+Howler.volume(0.5);
 
 export default connect(mapStateToProps, {getFriendRequests,fetchFriends,updateConversations, fetchConversations, updateFriends, deleteConversation})(withSnackbar(Notifications, alertOptions));
