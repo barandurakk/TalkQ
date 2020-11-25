@@ -1,4 +1,4 @@
-import {FETCH_USER, UPDATE_USER_AVATAR, SET_REQUESTS,REJECT_REQUEST,ACCEPT_REQUEST, FETCH_FRIENDS,DELETE_FRIEND,LOADING_DATA,STOP_LOADING_DATA} from "../actions/types";
+import {FETCH_USER, LOGOUT_USER, UPDATE_USER_AVATAR, SET_REQUESTS,REJECT_REQUEST,ACCEPT_REQUEST, FETCH_FRIENDS,DELETE_FRIEND,LOADING_DATA,STOP_LOADING_DATA} from "../actions/types";
 
 const initialState = {
   auth: {},
@@ -25,6 +25,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         auth: action.payload
+      }
+
+     case LOGOUT_USER:
+      return{
+        ...state,
+        auth: {}
       }
 
     case SET_REQUESTS:

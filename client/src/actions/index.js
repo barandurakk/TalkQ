@@ -23,7 +23,8 @@ import {
   SAVE_TO_MESSAGE_CACHE,
   GET_MESSAGE_CACHE,
   UPDATE_MESSAGE_CACHE,
-   DELETE_MESSAGE_CACHE
+   DELETE_MESSAGE_CACHE,
+   LOGOUT_USER
 } from "./types";
 
 import {socket} from "../config/socket";
@@ -89,8 +90,13 @@ export const fetchUser = () => (dispatch) => {
   });
 };
 
-export const logoutUser = () => async (dispatch) => {
-  await axios.get("/api/logout");
+export const logoutUser = () => (dispatch) => {
+  axios.get("/api/logout").then((res)=>{
+    dispatch({type: LOGOUT_USER});
+  }).catch(err=>{
+    console.log(err);
+  })
+  
 }
 
 //FRIENDSHIP REQUEST ACTIONS

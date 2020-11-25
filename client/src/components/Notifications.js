@@ -67,7 +67,7 @@ class Notifications extends React.Component {
                 body: message.body.length > 35 ? (`${message.body.substr(0,35)}...`):(message.body),
                 icon: "../img/logo.png",
                 requireInteraction: true,
-                timeout:4000,
+                timeout:30000,
                 onClick: () => {
                     window.focus();
                     this.close();

@@ -15,6 +15,8 @@ import Notifications from "./Notifications";
 
 //icons
 import CopyIcon from "../svg/copyIcon.svg"
+import googlepic from "../img/signWGoogle.png"
+import logo from "../img/logo.png"
 
 //actions
 import { uploadImage } from "../actions/index";
@@ -58,6 +60,16 @@ const UserDetail = () => {
     const [openSnackbar] = useSnackbar();
     const dispatch = useDispatch();
     return (
+        _.isEmpty(auth) ? 
+        (
+            <div className="noUser-container">
+                <div className="noUser-wrapper">
+                <img src={logo} alt="Logo" className="landing-logo" />
+                    <p className="noUser-header"> Login for start <strong>chatting!</strong></p>
+                    <a href="/auth/google" className="google-noUser-wrapper"><img src={googlepic} alt="GoogleSignIn" className="noUser-img" /></a>
+                </div>
+            </div>
+        ) : 
         !loading ? (
             <div className="userDetail-container">
             <div className="userDetail-top">
