@@ -40,7 +40,7 @@ class Settings extends React.Component {
                     className="settings-item"
                     onClick={()=> {
                         this.props.logoutUser();      
-                        this.props.history.push('/')            
+                        this.props.history.push('/login')            
                     }}
                     >Logout</button>
                 </div>

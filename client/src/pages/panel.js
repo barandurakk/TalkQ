@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from "react";
-import { useDispatch } from 'react-redux';
+import React from "react";
+import {connect} from "react-redux";
 import _ from "lodash";
 import MediaQuery from 'react-responsive'
 
@@ -9,6 +9,10 @@ import ConversationList from "../components/ConversationList";
 import FriendList from "../components/FriendList";
 import ChatBox from "../components/ChatBox";
 
+//icons
+import googlepic from "../img/signWGoogle.png"
+import logo from "../img/logo.png"
+
 //actions
 import {fetchUser, fetchFriends, fetchConversations} from "../actions/index";
 
@@ -16,89 +20,120 @@ import {fetchUser, fetchFriends, fetchConversations} from "../actions/index";
 import "../css/pages/panel.css";
 
 
-const handleSelectFriend = (friend, setSelectFriend) => {
-               
-        setSelectFriend(friend);
-}
+class Panel extends React.Component{
 
-const handleCloseDrawer = (setShowDrawer) => {
-    setShowDrawer(false);
-}
+    constructor(props){
+        super(props);
+        this.props.fetchUser();
+        this.props.fetchFriends();
+        this.props.fetchConversations();
+        this.state={
+            selectedList: 0,
+            selectFriend: null,
+            showDrawer: true
+        }
 
-const Panel = () => {
+    }
 
-    const [selectedList, setSelectedList] = useState(0);
-    const [selectFriend, setSelectFriend] = useState(null);
-    const [showDrawer, setShowDrawer] = useState(true);
-     const dispatch = useDispatch();
-
-    useEffect(() => {  
-        dispatch(fetchUser());
-        dispatch(fetchConversations()); 
-        dispatch(fetchFriends());
-        // eslint-disable-next-line
-    }, [])
-
-
-    return (
-    <div className="main-container">
-        <div className={`left-container ${showDrawer ? ("showDrawer"):(null)}`}>
-            <UserDetail/>
-
-            <div className="select-container">
-                <button className={`select-buttons ${selectedList === 0 ? "active":null}`}
-                    onClick={() => setSelectedList(0)}
-                >Chats</button>
-                <button className={`select-buttons ${selectedList === 1 ? "active":null}`}
-                 onClick={() => setSelectedList(1)}
-                >Friends</button>
-            </div>
-            {selectedList === 0 ? (
-
-                <ConversationList 
-                selectFriend={(friend) => {
-                    handleSelectFriend(friend, setSelectFriend);
-                }}
-                closeDrawer = {() => handleCloseDrawer(setShowDrawer)}
-                />
-
-            ): selectedList === 1 ? (
-                <FriendList 
-                selectFriend={(friend) => {
-                    handleSelectFriend(friend, setSelectFriend);
-                }}
-                closeDrawer = {() => handleCloseDrawer(setShowDrawer)}
-                />
-            ) : (null)}
-   
-        </div>
-        <div className="right-container">
-                <MediaQuery maxDeviceWidth={600} >
-                    <button
-                    className="openDrawer-button"
-                    onClick={()=> setShowDrawer(true)}
-                    > >
-                    </button>
-                </MediaQuery>
-            {!_.isEmpty(selectFriend) ?
-            (
-                <ChatBox friend={selectFriend}/>
-            ) 
-            :
-            (
-                <div className="noConversation-container">
-                    Select <br/>
-                    Conversation<br/>
-                    or<br/>
-                    Friend
-                </div>
-            )}
+    renderOnNotAuth = () => {
+        return(
             
+            <div className="noUser-container">
+                <div className="noUser-wrapper">
+                <img src={logo} alt="Logo" className="landing-logo" />
+                    <p className="noUser-header"> Login for start <strong>chatting!</strong></p>
+                    <a href="/auth/google" className="google-noUser-wrapper"><img src={googlepic} alt="GoogleSignIn" className="noUser-img" /></a>
+                </div>
+            </div>
         
+        )
+    }
+
+    handleSelectFriend = (friend) => {
+               
+        this.setState({selectFriend: friend});
+        
+    }
+
+    handleCloseDrawer = () => {
+        this.setState({showDrawer: false});
+    }
+
+    render(){
+        const { selectedList, selectFriend, showDrawer} = this.state;
+        const {auth} = this.props;
+        return(
+            <div className="main-container">
+            <div className={`left-container ${showDrawer ? ("showDrawer"):(null)}`}>
+                {auth ? (
+                    <UserDetail/>
+                ):(
+                    this.renderOnNotAuth()
+                )}
+                
+    
+                <div className="select-container">
+                    <button className={`select-buttons ${selectedList === 0 ? "active":null}`}
+                        onClick={() => this.setState({selectedList: 0})}
+                    >Chats</button>
+                    <button className={`select-buttons ${selectedList === 1 ? "active":null}`}
+                     onClick={() => this.setState({selectedList: 1})}
+                    >Friends</button>
+                </div>
+                {selectedList === 0 ? (
+    
+                    <ConversationList 
+                    selectFriend={(friend) => {
+                        this.handleSelectFriend(friend);
+                    }}
+                    closeDrawer = {() => this.handleCloseDrawer()}
+                    />
+    
+                ): selectedList === 1 ? (
+                    <FriendList 
+                    selectFriend={(friend) => {
+                        this.handleSelectFriend(friend);
+                    }}
+                    closeDrawer = {() => this.handleCloseDrawer()}
+                    />
+                ) : (null)}
+       
+            </div>
+            <div className="right-container">
+                    <MediaQuery maxDeviceWidth={600} >
+                        <button
+                        className="openDrawer-button"
+                        onClick={()=> this.setState({showDrawer: true})}
+                        > >
+                        </button>
+                    </MediaQuery>
+                {!_.isEmpty(selectFriend) ?
+                (
+                    <ChatBox friend={selectFriend}/>
+                ) 
+                :
+                (
+                    <div className="noConversation-container">
+                        Select <br/>
+                        Conversation<br/>
+                        or<br/>
+                        Friend
+                    </div>
+                )}
+                
+            
+            </div>
         </div>
-    </div>
-    )
-  
+        )
+    }
+
+
 }
 
-export default (Panel);
+const mapStateToProps = state => {
+    return {
+        auth: state.data.auth
+    }
+}
+
+export default connect(mapStateToProps, {fetchUser, fetchConversations, fetchFriends})(Panel);

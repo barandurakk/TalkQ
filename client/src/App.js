@@ -16,7 +16,7 @@ class App extends React.Component {
     return (
       <SnackbarProvider>
       <Router history={history}>
-        {/* <Route exact path="/" component={Landing} /> */}
+        { <Route exact path="/login" component={Landing} /> }
         <Route exact path="/" component={Panel} />
       </Router>
       </SnackbarProvider>

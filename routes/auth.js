@@ -10,6 +10,7 @@ module.exports = (app, upload) => {
     "/auth/google",
     passport.authenticate("google", {
       scope: ["profile", "email"],
+      prompt : "select_account"
     })
   );
 
@@ -19,8 +20,24 @@ module.exports = (app, upload) => {
   });
 
   app.get("/api/logout", (req, res) => {
-    req.logout();
-    res.status(200);
+    
+    //req.logout();
+   // req.session = null;
+    res.clearCookie('session_cookie',  {
+      name: 'session_cookie',
+      httpOnly: false,
+      signed: false,
+      secret: keys.cookieKey
+    })
+    res.clearCookie('session_cookie.sig',  {
+      name: 'session_cookie',
+      httpOnly: false,
+      signed: false,
+      secret: keys.cookieKey
+    })
+    res.json({
+      status: 'ok'
+    })
   });
 
   app.get("/api/currentUser", (req, res) => {

@@ -29,8 +29,7 @@ export default (state = initialState, action) => {
 
      case LOGOUT_USER:
       return{
-        ...state,
-        auth: {}
+        state : initialState
       }
 
     case SET_REQUESTS:

@@ -35,7 +35,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   cookieSession({
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    name: "session_cookie",
+    maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
     keys: [keys.cookieKey],
   })
 );

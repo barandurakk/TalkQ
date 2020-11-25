@@ -66,12 +66,9 @@ class Notifications extends React.Component {
             Push.create(`${message.userName}: `,{
                 body: message.body.length > 35 ? (`${message.body.substr(0,35)}...`):(message.body),
                 icon: "../img/logo.png",
-                requireInteraction: true,
-                timeout:30000,
-                onClick: () => {
-                    window.focus();
-                    this.close();
-                }
+                timeout:5000,
+                serviceWorker: '../swDev.js'
+                
             });
             this.props.updateConversations({from: message.from, to:message.to, body: message.body, friendName: message.userName, friendAvatar: message.userAvatar }); 
         })
