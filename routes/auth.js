@@ -52,7 +52,7 @@ module.exports = (app, upload) => {
      req.body.file = result.secure_url;
      req.body.fileId = result.public_id;
 
-     User.findOneAndUpdate({_id: req.user._id}, {pictureUrl: result.url}).then(user => {
+     User.findOneAndUpdate({_id: req.user._id}, {pictureUrl: result.secure_url}).then(user => {
        if(!user){
          return res.status(403);
        }

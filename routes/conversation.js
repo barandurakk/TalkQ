@@ -79,8 +79,14 @@ module.exports = (app) => {
 
   //delete all messages (for dev)
   app.get("/api/messages/delete", async (req,res) => {
-    await Message.deleteMany({});
-    res.send({message: "DELETED"});
+    if(process.env.NODE_ENV === "production"){
+      res.status(401).send({error: "Cant delete on production"})
+     
+    }else{
+      await Message.deleteMany({});
+      res.send({message: "DELETED"});
+    }
+    
   })
 
 
