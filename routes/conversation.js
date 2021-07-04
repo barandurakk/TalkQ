@@ -13,13 +13,8 @@ module.exports = (app) => {
   app.post("/api/messages/get", checkJWT, async (req, res) => {
     const friendId = req.body.friendId;
     const userId = req.user._id;
-    const { size, page } = req.params;
-
-    try {
-      const totalItems = await Message.countDocuments({});
-    } catch (err) {
-      console.error(err);
-    }
+    const { size, page } = req.query;
+    const totalItems = await Message.countDocuments({ _id: req.user._id });
 
     Message.find({
       $or: [
@@ -28,15 +23,20 @@ module.exports = (app) => {
       ],
     })
       .sort({ dateSent: "asc" })
-      .skip(size * page)
-      .limit(size) //for budget
+      .skip(parseInt(size) * parseInt(page))
+      .limit(parseInt(size)) //for budget
       .then((result) => {
         if (!result) {
           return res.status(404).send();
         } else {
           return res.send({
             result,
-            pagination: { totalItems, size, page, totalPage: Math.ceil(totalItems / size) },
+            pagination: {
+              totalItems: totalItems,
+              size: size,
+              page: page,
+              totalPage: Math.ceil(totalItems / size),
+            },
           });
         }
       })
