@@ -40,7 +40,6 @@ passport.use(
     },
     async (email, password, done) => {
       try {
-        console.log("inside the local strategy");
         //finding user
         const user = await User.findOne({ "local.email": email });
         if (!user) {
@@ -135,40 +134,3 @@ passport.use(
     }
   )
 );
-
-// passport.serializeUser((user, done) => {
-//   done(null, user.id);
-// });
-
-// passport.deserializeUser((id, done) => {
-//   User.findById(id).then((user) => {
-//     done(null, user);
-//   });
-// });
-
-// passport.use(
-//   new GoogleStrategy(
-//     {
-//       clientID: keys.googleClientId,
-//       clientSecret: keys.googleSecretId,
-//       callbackURL: "/auth/google/callback",
-//       proxy: true,
-//     },
-//     async (accessToken, refreshToken, profile, done) => {
-//       const existingUser = await User.findOne({ googleId: profile.id });
-
-//       if (existingUser) {
-//         return done(null, existingUser);
-//       }
-
-//       const user = await new User({
-//         googleId: profile.id,
-//         name: profile.displayName,
-//         pictureUrl: profile._json.picture,
-//         friends: [],
-//         dateRegister: Date.now(),
-//       }).save();
-//       done(null, user);
-//     }
-//   )
-// );

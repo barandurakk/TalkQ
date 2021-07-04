@@ -11,6 +11,7 @@ import axios from "axios";
 
 import Login from "./pages/login.js";
 import Panel from "./pages/panel.js";
+import Register from "./pages/register";
 
 export const history = createBrowserHistory();
 axios.defaults.withCredentials = true;
@@ -38,6 +39,7 @@ class App extends React.Component {
       <SnackbarProvider>
         <Router history={history}>
           <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
           <Route exact path="/" component={Panel} />
         </Router>
       </SnackbarProvider>

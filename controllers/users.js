@@ -18,11 +18,13 @@ signToken = (user) => {
 
 module.exports = {
   signUp: async (req, res, next) => {
-    const { email, password, name } = req.body;
+    const { email, password, rePassword, name } = req.body;
 
     if (!email || !password || !name) {
       return res.status(400).json({ error: "You have to indicate email, password and name!" });
     }
+
+    if (password !== rePassword) return res.status(400).json({ error: "Passwords not match!" });
 
     // Check if there is a user with the same email
     let foundUser = await User.findOne({ "local.email": email });
@@ -35,7 +37,6 @@ module.exports = {
       "google.email": email,
     });
     if (foundUser) {
-      console.log("HERE!");
       //link account
       foundUser.methods.push("local");
       foundUser.local = {
@@ -46,7 +47,7 @@ module.exports = {
       //create token
       const token = signToken(foundUser);
       //respond
-      res.status(200).send(token);
+      return res.status(200).send(token);
     }
 
     //create new user
@@ -67,25 +68,25 @@ module.exports = {
     //create token
     const token = signToken(newUser);
     //respond
-    res.status(200).send(token);
+    return res.status(200).send(token);
   },
 
   signIn: async (req, res, next) => {
     //create token
     const token = signToken(req.user);
     //respond
-    res.status(200).send(token);
+    return res.status(200).send(token);
   },
 
   googleOAuth: async (req, res, next) => {
     //create token
     const token = signToken(req.user);
     //respond
-    res.status(200).send(token);
+    return res.status(200).send(token);
   },
 
   linkGoogle: async (req, res, next) => {
-    res.status(200).send({ message: "Successfully linked account with Google" });
+    return res.status(200).send({ message: "Successfully linked account with Google" });
   },
 
   unlinkGoogle: async (req, res, next) => {
@@ -108,6 +109,6 @@ module.exports = {
   },
 
   getUser: async (req, res, next) => {
-    res.send(req.user);
+    return res.send(req.user);
   },
 };

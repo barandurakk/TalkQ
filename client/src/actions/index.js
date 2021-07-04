@@ -31,7 +31,7 @@ import {
   UNSET_USER,
   SET_AUTHENTICATED,
 } from "./types";
-
+import keys from "../config/keys";
 import { socket } from "../config/socket";
 
 //FRIENDSHIP ACTIONS
@@ -112,6 +112,53 @@ export const googleAuth = (data) => (dispatch) => {
     .catch((err) => {
       dispatch({ type: STOP_USER_LOADING });
       console.error(err);
+    });
+};
+
+export const login = (data) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  axios
+    .post("/api/signin", data)
+    .then((res) => {
+      setAuthorizationHeader(res.data);
+      dispatch(fetchUser());
+      dispatch({ type: STOP_LOADING_UI });
+    })
+    .catch((err) => {
+      if (err.response.status === 401) {
+        dispatch({ type: AUTH_ERROR, payload: { general: "Email or password is wrong!" } });
+        dispatch({ type: STOP_LOADING_UI });
+      } else {
+        dispatch({
+          type: AUTH_ERROR,
+          payload: { general: "There is something wrong :( Please try again." },
+        });
+        dispatch({ type: STOP_LOADING_UI });
+      }
+    });
+};
+
+//AUTH ACTIONS
+export const register = (formData) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  axios
+    .post("/api/signup", formData)
+    .then((res) => {
+      dispatch({ type: STOP_LOADING_UI });
+      res.status === 200 && window.location.replace(`${keys.client_url}/login`);
+    })
+    .catch((err) => {
+      console.log(err.response);
+      if (err.response.status === 403) {
+        dispatch({ type: AUTH_ERROR, payload: { general: "This email is already taken" } });
+        dispatch({ type: STOP_LOADING_UI });
+      } else {
+        dispatch({
+          type: AUTH_ERROR,
+          payload: { general: "There is something wrong :( Please try again." },
+        });
+        dispatch({ type: STOP_LOADING_UI });
+      }
     });
 };
 

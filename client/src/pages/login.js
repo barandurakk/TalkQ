@@ -1,70 +1,106 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import keys from "../config/keys";
 import logo from "../img/logo.png";
 import GoogleLogin from "react-google-login";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { validateEmail } from "../util/validators";
+import _ from "lodash";
 
 //style
 import "../css/pages/landing.css";
 
-import { googleAuth } from "../actions/index";
+import { googleAuth, login } from "../actions/index";
 
-class Login extends React.Component {
-  UNSAFE_componentWillMount() {
-    if (this.props.isAuth) {
-      this.props.history.push("/");
-    }
-  }
+const Login = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { errorMessage, isAuthenticated, loading } = useSelector((state) => state.auth);
+  const uiLoading = useSelector((state) => state.ui.loading);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formError, setFormError] = useState({ email: "", password: "", general: "" });
 
-  componentDidUpdate(prevProps) {
-    if (this.props !== prevProps) {
-      if (!this.props.loading && !this.props.errorMessage && this.props.isAuth) {
-        this.props.history.push("/"); //push user to the main page
-      }
-    }
-  }
+  useEffect(() => {
+    if (isAuthenticated && !loading && !errorMessage) history.push("/");
 
-  onGoogle = async (res) => {
-    debugger;
-    await this.props.googleAuth(res.accessToken);
+    if (errorMessage) setFormError({ ...formError, ...errorMessage });
+    else if (!errorMessage) setFormError({ ...formError, general: "" });
+  }, [isAuthenticated, loading, errorMessage]);
+
+  const onGoogle = (res) => {
+    dispatch(googleAuth(res.accessToken));
   };
 
-  render() {
-    return (
-      <div className="landing-container">
-        <div className="start-container">
-          <div className="start-wrapper">
-            <img src={logo} alt="Logo" className="landing-logo" />
+  const handleOnChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-            <GoogleLogin
-              clientId={keys.googleClientID}
-              prompt="select_account"
-              render={(renderProps) => (
-                <button
-                  className="btn btn-danger"
-                  onClick={renderProps.onClick}
-                  disabled={renderProps.disabled}
-                >
-                  Google ile giriş yapın
-                </button>
-              )}
-              onSuccess={this.onGoogle}
-              onFailure={this.onGoogle}
-              className="btn btn-outline-danger"
-            />
-          </div>
+  const handleSubmit = () => {
+    if (!formError.email && !formError.password) dispatch(login(formData));
+  };
+
+  const handleFocusOut = (e) => {
+    //debugger;
+    if (e.target.name === "email") {
+      let error = validateEmail(e.target.value);
+      if (!_.isEmpty(error)) setFormError({ ...formError, ...error });
+      else setFormError({ ...formError, email: "" });
+    }
+
+    if (e.target.name === "password") {
+      if (!e.target.value) setFormError({ ...formError, password: "Password can't be empty!" });
+      else setFormError({ ...formError, password: "" });
+    }
+  };
+  return (
+    <div className="landing-container">
+      <div className="start-container" style={{ display: "flex", flexDirection: "column" }}>
+        <img src={logo} alt="Logo" className="landing-logo" />
+
+        <div className="login-form-wrapper" style={{ display: "flex", flexDirection: "column" }}>
+          {formError.general && <span>{formError.general}</span>}
+          <label>E-mail</label>
+          <input
+            type="text"
+            id="login-email-input"
+            name="email"
+            value={formData.email}
+            onChange={handleOnChange}
+            onBlur={handleFocusOut}
+          />
+          {formError.email && <span>{formError.email}</span>}
+          <label>Password</label>
+          <input
+            type="password"
+            id="login-password-input"
+            name="password"
+            value={formData.password}
+            onChange={handleOnChange}
+            onBlur={handleFocusOut}
+          />
+          {formError.password && <span>{formError.password}</span>}
+          {!uiLoading ? <button onClick={handleSubmit}>Giriş Yap</button> : <span>Loading</span>}
         </div>
-      </div>
-    );
-  }
-}
 
-const mapStateToProps = (state) => {
-  return {
-    errorMessage: state.auth.errorMessage,
-    loading: state.auth.loading,
-    isAuth: state.auth.isAuthenticated,
-  };
+        <GoogleLogin
+          clientId={keys.googleClientID}
+          prompt="select_account"
+          render={(renderProps) => (
+            <button
+              className="btn btn-danger"
+              onClick={renderProps.onClick}
+              disabled={renderProps.disabled}
+            >
+              Google ile giriş yapın
+            </button>
+          )}
+          onSuccess={onGoogle}
+          onFailure={onGoogle}
+          className="btn btn-outline-danger"
+        />
+      </div>
+    </div>
+  );
 };
 
-export default connect(mapStateToProps, { googleAuth })(Login);
+export default Login;

@@ -42,7 +42,7 @@ export default (state = initialState, action) => {
     case AUTH_ERROR:
       return {
         ...state,
-        errorMessage: action.payload,
+        errorMessage: { ...action.payload },
       };
 
     default:
