@@ -1,24 +1,25 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const keys = require("./util/keys");
-const bodyParser = require("body-parser");
-const app = express();
-const http = require("http").createServer( app );
 const socketIo = require("socket.io");
 const cors = require("cors");
-const passport = require("passport");
-const cookieSession = require("cookie-session");
-const secure = require('ssl-express-www');
+const secure = require("ssl-express-www");
+const bodyParser = require("body-parser");
+const Router = require("express-promise-router");
+const router = Router();
 
+const app = express();
+const http = require("http").createServer(app);
 
 //for monitoring
-require('newrelic');
+//require("newrelic");
 
 //models
 require("./models/User");
 require("./models/Conversation");
 require("./models/Messages");
 require("./models/FriendRequest");
+
 /* -- */
 
 //database connect
@@ -26,7 +27,7 @@ mongoose.connect(keys.mongoURI);
 /* -- */
 
 //cors stuff
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 /* -- */
 
@@ -34,54 +35,47 @@ app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(secure); //redirect https
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-  cookieSession({
-    name: "session_cookie",
-    maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
-    keys: [keys.cookieKey],
-  })
-);
+app.use(router);
+
 /* -- */
 
 //passport
 require("./services/passport");
-app.use(passport.initialize());
-app.use(passport.session());
 
 //Upload Image Configs
 const multer = require("multer");
 const cloudinary = require("cloudinary");
 const storage = multer.diskStorage({
-  filename: function(req, file, callback) {
-  callback(null, Date.now() + file.originalname);
-  }
-  });
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  },
+});
 
- const imageFilter = (req, file, cb) => {
+const imageFilter = (req, file, cb) => {
   // accept image files only
   if (!file.originalname.match(/\.(jpg|jpeg|png)$/i)) {
-  return cb(new Error("Only image files are accepted!"), false);
+    return cb(new Error("Only image files are accepted!"), false);
   }
   cb(null, true);
-  };
-  const upload = multer({ storage: storage, fileFilter: imageFilter });
-  
-    cloudinary.config({
-        cloud_name: keys.cloudinary_cloud_name,
-        api_key: keys.cloudinary_api_key,
-        api_secret: keys.cloudinary_secret_key
-    });
-    
+};
+const upload = multer({ storage: storage, fileFilter: imageFilter });
+
+cloudinary.config({
+  cloud_name: keys.cloudinary_cloud_name,
+  api_key: keys.cloudinary_api_key,
+  api_secret: keys.cloudinary_secret_key,
+});
+
 //----------
 
-
 //socket io
-const io = socketIo(http, {wsEngine: "ws"});
+const io = socketIo(http, { wsEngine: "ws" });
 require("./services/socket")(io);
 
 /* -- */
 
 //routes
+
 require("./routes/auth")(app, upload);
 require("./routes/conversation")(app);
 require("./routes/friendship")(app);
@@ -92,7 +86,6 @@ if (process.env.NODE_ENV === "production") {
   const path = require("path");
   //Express main.js ve main.css gibi dosyalara ulaşıp cevap verebilsin diye.
   app.use(express.static(path.join(__dirname, "/client/build")));
-  
 
   //Express gelen route'u tanımazsa index.html sayfasını cevap olarak göndersin diye.
 

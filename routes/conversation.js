@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 const _ = require("lodash");
-const requireLogin = require("../middlewares/requireLogin");
 
 const Conversation = mongoose.model("conversations");
 const Message = mongoose.model("messages");
+const passport = require("passport");
+const checkJWT = passport.authenticate("jwt", { session: false });
 
 module.exports = (app) => {
   //MESSAGES
 
   //get messages with a user
-  app.post("/api/messages/get", requireLogin, async (req, res) => {
+  app.post("/api/messages/get", checkJWT, async (req, res) => {
     const friendId = req.body.friendId;
     const userId = req.user._id;
     const { size, page } = req.params;
@@ -46,7 +47,7 @@ module.exports = (app) => {
   });
 
   //post a message
-  app.post("/api/message/new", requireLogin, async (req, res) => {
+  app.post("/api/message/new", checkJWT, async (req, res) => {
     const from = req.body.from;
     const to = req.body.to;
     const body = req.body.body;
@@ -108,7 +109,7 @@ module.exports = (app) => {
   //CONVERSATIONS
 
   //get all conversations user's owned or being recipient
-  app.get("/api/conversations/all", requireLogin, async (req, res) => {
+  app.get("/api/conversations/all", checkJWT, async (req, res) => {
     const user = req.user;
 
     const conversations = await Conversation.aggregate([
@@ -160,7 +161,7 @@ module.exports = (app) => {
   });
 
   //create a conversation
-  app.post("/api/conversation/create", requireLogin, async (req, res) => {
+  app.post("/api/conversation/create", checkJWT, async (req, res) => {
     const userId = req.user._id;
     const friendId = req.body.friendId;
     const lastMessage = req.body.lastMessage;
@@ -183,7 +184,7 @@ module.exports = (app) => {
   });
 
   //delete a conservation
-  app.post("/api/conversation/delete", requireLogin, async (req, res) => {
+  app.post("/api/conversation/delete", checkJWT, async (req, res) => {
     const userId = req.user._id;
     const friendId = req.body.friendId;
 
