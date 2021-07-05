@@ -22,9 +22,9 @@ import "../css/pages/panel.css";
 class Panel extends React.Component {
   constructor(props) {
     super(props);
-    // this.props.fetchUser();
-    // this.props.fetchFriends();
-    // this.props.fetchConversations();
+    this.props.fetchUser();
+    this.props.fetchFriends();
+    this.props.fetchConversations();
     this.state = {
       selectedList: 0,
       selectFriend: null,
@@ -49,12 +49,10 @@ class Panel extends React.Component {
   render() {
     console.log(this.props.auth);
     const { selectedList, selectFriend, showDrawer } = this.state;
-    const { auth } = this.props;
     return (
       <div className="main-container">
         <div className={`left-container ${showDrawer ? "showDrawer" : null}`}>
           <UserDetail />
-
           <div className="select-container">
             <button
               className={`select-buttons ${selectedList === 0 ? "active" : null}`}

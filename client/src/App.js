@@ -4,7 +4,7 @@ import createBrowserHistory from "history/createBrowserHistory";
 import SnackbarProvider from "react-simple-snackbar";
 import jwtDecode from "jwt-decode";
 import { SET_AUTHENTICATED } from "./actions/types";
-import { fetchUser } from "./actions/index";
+import { fetchUser, logout } from "./actions/index";
 import axios from "axios";
 
 //components
@@ -25,7 +25,7 @@ class App extends React.Component {
     if (token) {
       const decodedToken = jwtDecode(token);
       if (decodedToken.exp * 1000 < Date.now()) {
-        // store.dispatch(logoutUser());
+        store.dispatch(logout());
       } else {
         store.dispatch({ type: SET_AUTHENTICATED });
         axios.defaults.headers.common["Authorization"] = localStorage.getItem("JwtToken");

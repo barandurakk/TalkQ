@@ -3,6 +3,7 @@ const _ = require("lodash");
 
 const Conversation = mongoose.model("conversations");
 const Message = mongoose.model("messages");
+const User = mongoose.model("users");
 const passport = require("passport");
 const checkJWT = passport.authenticate("jwt", { session: false });
 
@@ -24,7 +25,7 @@ module.exports = (app) => {
     })
       .sort({ dateSent: "asc" })
       .skip(parseInt(size) * parseInt(page))
-      .limit(parseInt(size)) //for budget
+      .limit(parseInt(size))
       .then((result) => {
         if (!result) {
           return res.status(404).send();
@@ -55,7 +56,6 @@ module.exports = (app) => {
     if (from == to) {
       return res.status(403).send({ error: "You cant send message to yourself!" });
     }
-
     const message = new Message({
       from,
       to,
